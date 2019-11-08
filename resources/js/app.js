@@ -8,6 +8,18 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+import 'vuetify/dist/vuetify.min.css'
+import '@mdi/font/css/materialdesignicons.css'
+
+import Vue from 'vue'
+import Vuetify from 'vuetify'
+
+import App from './App.vue'
+import router from './router'
+import store from './store/store'
+import config from "./config";
+
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -42,6 +54,14 @@ Vue.component(
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+Vue.config.productionTip = false;
+
+Vue.use(Vuetify);
+
 const app = new Vue({
+    router,
+    store,
+    vuetify: new Vuetify(),
+    render: function(h) { return h(App);},
     el: '#app',
 });
