@@ -18,12 +18,16 @@ class CreateIssuesTable extends Migration
 
             $table->string('name');
 
-            $table->unsignedInteger('project_id');
+            $table->unsignedBigInteger('project_id');
 
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('project_id')->references('id')->on('projects');
+            $table->foreign('project_id')
+                ->references('id')
+                ->on('projects')
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 
