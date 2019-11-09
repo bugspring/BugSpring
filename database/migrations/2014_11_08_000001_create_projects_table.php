@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-class CreateIssuesTable extends Migration
+class CreateProjectsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,17 @@ class CreateIssuesTable extends Migration
      */
     public function up()
     {
-        Schema::create('issues', function (Blueprint $table) {
+        Schema::create('projects', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedInteger('owner_id');
 
             $table->string('name');
-
-            $table->unsignedInteger('project_id');
+            $table->text('description');
 
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('project_id')->references('id')->on('projects');
+            $table->foreign('owner_id')->references('id')->on('users');
         });
     }
 
@@ -34,6 +34,6 @@ class CreateIssuesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('issues');
+        Schema::dropIfExists('projects');
     }
 }
