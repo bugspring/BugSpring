@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Project\IndexProjectsRequest;
+use App\Http\Requests\Api\Project\ShowProjectRequest;
+use App\Http\Requests\Api\Project\StoreProjectRequest;
+use App\Models\Project;
 use App\Repositories\ProjectRepository;
 use Illuminate\Http\Request;
 
@@ -37,23 +40,29 @@ class ProjectController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param StoreProjectRequest $request
+     * @return Project
      */
-    public function store(Request $request)
+    public function store(StoreProjectRequest $request)
     {
-        //
+        $user = $request->user();
+        return $this->projectRepository->createProject([
+            'owner_id' => $user->id,
+            'name' => $request->name,
+            'description' => $request->description
+        ]);
     }
 
     /**
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  ShowProjectRequest $request
+     * @return Project
      */
-    public function show($id)
+    public function show(ShowProjectRequest $request, $id)
     {
-        //
+        return $this->projectRepository->getProjectById($id);
     }
 
     /**

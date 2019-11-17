@@ -20,4 +20,19 @@ class ProjectRepository
         return User::find($userId)->projects;
     }
 
+    public function createProject(array  $data)
+    {
+        return Project::create($data);
+    }
+
+    /**
+     * @param int $id
+     * @param array $with
+     * @return Project
+     */
+    public function getProjectById(int $id, array $with=[])
+    {
+        return Project::whereId($id)->with($with)->firstOrFail();
+    }
+
 }

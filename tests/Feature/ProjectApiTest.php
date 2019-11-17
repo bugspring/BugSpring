@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Passport\Passport;
+use Mockery\Generator\StringManipulation\Pass\Pass;
 use Tests\TestCase;
 
 class ProjectApiTest extends TestCase
@@ -59,4 +60,41 @@ class ProjectApiTest extends TestCase
             '*' => self::JSON_STRUCTURE
         ])->assertJsonCount(100);
     }
+
+    public function testStoreCreatesAProjectInTheDatabase()
+    {
+        Passport::actingAs($this->user);
+
+        $projectData = [
+            'name' => "BugSpring",
+            'description' => "A modern Issue Tracker...",
+        ];
+
+        $this->json('POST', self::BASE_PATH,$projectData)
+            ->assertStatus(201)
+            ->assertJsonStructure(self::JSON_STRUCTURE)
+            ->assertJson($projectData);
+
+        $this->assertDatabaseHas('projects', $projectData);
+    }
+
+    public function testStoreNeedsNameProperty()
+    {
+        Passport::actingAs($this->user);
+
+        $this->json('POST', self::BASE_PATH, [
+            'description' => "A modern Issue Tracker...",
+        ])->assertStatus(422);
+    }
+
+    public function testStoreNeedsDescriptionProperty()
+    {
+        Passport::actingAs($this->user);
+
+        $this->json('POST', self::BASE_PATH, [
+            'name' => "BugSpring",
+        ])->assertStatus(422);
+    }
+
+
 }

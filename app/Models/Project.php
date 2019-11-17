@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\Date;
  */
 class Project extends Model
 {
+    protected $guarded = [];
+
     public function users()
     {
         return $this->belongsToMany(User::class);
