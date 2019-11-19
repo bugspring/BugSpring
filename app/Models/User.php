@@ -5,12 +5,16 @@ namespace App\Models;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Collection;
 use Laravel\Passport\HasApiTokens;
 
 /**
  * @method static User find(int $userId)
  *
  * @property int id
+ * @property string name
+ * @property string email
+ * @property Collection projects
  *
  */
 class User extends Authenticatable

@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\Project\DestroyProjectRequest;
 use App\Http\Requests\Api\Project\IndexProjectsRequest;
 use App\Http\Requests\Api\Project\ShowProjectRequest;
 use App\Http\Requests\Api\Project\StoreProjectRequest;
+use App\Http\Requests\Api\Project\UpdateProjectRequest;
 use App\Models\Project;
 use App\Repositories\ProjectRepository;
+use Exception;
 use Illuminate\Http\Request;
 
 class ProjectController extends Controller
@@ -68,23 +71,37 @@ class ProjectController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param UpdateProjectRequest $request
+     * @param Project $project
+     * @return Project
      */
-    public function update(Request $request, $id)
+    public function update(UpdateProjectRequest $request, Project $project)
     {
-        //
+        $updateData = [];
+
+        if($request->has('owner_id')) {
+            $updateData['owner_id'] = $request->owner_id;
+        }
+        if($request->has('name')) {
+            $updateData['name'] = $request->name;
+        }
+        if($request->has('description')) {
+            $updateData['description'] = $request->description;
+        }
+
+        return $this->projectRepository->updateProject($project, $updateData);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param DestroyProjectRequest $request
+     * @param Project $project
+     * @return Project
+     * @throws Exception
      */
-    public function destroy($id)
+    public function destroy(DestroyProjectRequest $request, Project $project)
     {
-        //
+        return $this->projectRepository->deleteProject($project);
     }
 }

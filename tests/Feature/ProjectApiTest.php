@@ -97,4 +97,102 @@ class ProjectApiTest extends TestCase
     }
 
 
+    public function testUpdateModifiesAProjectInTheDatabase()
+    {
+        Passport::actingAs($this->user);
+
+        /** @var Project $project */
+        $project = factory(Project::class)->create([
+            'owner_id' => $this->user->id
+        ]);
+        /** @var User $otherUser */
+        $otherUser = factory(User::class)->create();
+
+        $updateData = [
+            'owner_id' => $otherUser->id,
+            'name' => 'My super awesome project!',
+            'description' => 'Is now owned by someone else...'
+        ];
+
+        $this->json('PUT', self::BASE_PATH . "/{$project->id}", $updateData)
+            ->assertStatus(200)
+            ->assertJsonStructure(self::JSON_STRUCTURE)
+            ->assertJson($updateData);
+
+        $this->assertDatabaseHas('projects', $updateData);
+    }
+
+    public function testUpdateCanChangeOwner()
+    {
+        /** @var User $otherUser */
+        $otherUser = factory(User::class)->create();
+
+        $this->updateProperty('owner_id', $otherUser->id);
+    }
+
+    public function testUpdateCanChangeName()
+    {
+        $this->updateProperty('name', 'My super awesome project!');
+    }
+
+    public function testUpdateCanChangeDescription()
+    {
+        $this->updateProperty('description', 'Infos about my super awesome project!');
+    }
+
+    public function updateProperty($property, $value)
+    {
+        Passport::actingAs($this->user);
+
+        /** @var Project $project */
+        $project = factory(Project::class)->create([
+            'owner_id' => $this->user->id
+        ]);
+
+        $this->json('PUT', self::BASE_PATH . "/{$project->id}", [
+            $property => $value
+        ])
+            ->assertStatus(200)
+            ->assertJsonStructure(self::JSON_STRUCTURE)
+            ->assertJson([
+                $property => $value
+            ]);
+
+        $this->assertDatabaseHas('projects', [
+            'id' => $project->id,
+            $property => $value
+        ]);
+    }
+
+    public function testUpdateNeedsExistingOwnerId()
+    {
+        Passport::actingAs($this->user);
+
+        /** @var Project $project */
+        $project = factory(Project::class)->create([
+            'owner_id' => $this->user->id
+        ]);
+
+        $this->json('PUT', self::BASE_PATH . "/{$project->id}", ['owner_id' => 0])
+            ->assertStatus(422);
+    }
+
+    public function testDestroyDeletesTheProjectInTheDatabase()
+    {
+        Passport::actingAs($this->user);
+
+        /** @var Project $project */
+        $project = factory(Project::class)->create([
+            'owner_id' => $this->user->id
+        ]);
+
+        $this->json('DELETE', self::BASE_PATH . "/{$project->id}")
+            ->assertStatus(200)
+            ->assertJsonStructure(self::JSON_STRUCTURE)
+            ->assertJson($project->toArray());
+
+        $this->assertDatabaseMissing('projects',['id' => $project->id]);
+    }
+
+
 }
