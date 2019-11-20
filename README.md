@@ -35,10 +35,21 @@ You need to ```cd``` into the cloned repository.
 > cd BugSpring
 ```
 
-In the directory, install ```composer``` and ```npm``` dependencies.
+In the directory, configure the application.
+You need at least to set the database configuration. The rest can be left at their default.
+```bash
+> cp .env.example .env
+> nano .env
+```
+
+Now ```composer install``` can be called.
+This will 
+* install php dependencies
+* generate the APP_KEY (set in the .env)
+* run the database migrations
+* install laravel/passport
 ```shell
 > composer install
-> npm install
 ```
 
 ## Running the tests
