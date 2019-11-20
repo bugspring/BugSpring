@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Collection;
 use Laravel\Passport\HasApiTokens;
+use Silber\Bouncer\Database\HasRolesAndAbilities;
 
 /**
  * @method static User find(int $userId)
@@ -21,6 +22,7 @@ class User extends Authenticatable
 {
     use Notifiable;
     use HasApiTokens;
+    use HasRolesAndAbilities;
 
     /**
      * The attributes that are mass assignable.
@@ -48,6 +50,11 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function ownProjects()
+    {
+        return $this->hasMany(Project::class, 'owner_id');
+    }
 
     public function projects()
     {

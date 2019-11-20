@@ -12,7 +12,8 @@
         "fideloper/proxy": "^4.0",
         "laravel/framework": "^6.0",
         "laravel/passport": "^8.0",
-        "laravel/tinker": "^1.0"
+        "laravel/tinker": "^1.0",
+        "silber/bouncer": "v1.0.0-rc.6"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",
@@ -64,6 +65,7 @@
             "@php artisan key:generate",
             "@php artisan migrate",
             "@php artisan passport:install",
+            "@php artisan db:seed",
             "npm install"
         ]
     }
