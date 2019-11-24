@@ -14,6 +14,7 @@ use App\Repositories\ProjectRepository;
 use Exception;
 use Illuminate\Http\Request;
 use Bouncer;
+use Illuminate\Support\Facades\Log;
 
 class ProjectController extends Controller
 {
@@ -35,20 +36,23 @@ class ProjectController extends Controller
      */
     public function index(IndexProjectsRequest $request)
     {
-//        Bouncer::allow('user')->toOwn(Project::class);
-//        Bouncer::ownedVia('owner_id');
         /** @var User $user */
         $user = $request->user();
+        Bouncer::allow(User::class)->toOwn(Project::class);
+        Bouncer::ownedVia('owner_id');
 
-        dd($user->can('read',$user->ownProjects->first()));
+//        dd($user->can('read',$user->ownProjects->first()));
 
         // get own projects
         $projects = $this->projectRepository->getProjectsOfUser($user->id);
         // add linked projects
         $projects = $projects->merge($this->projectRepository->getLinkedProjects($user->id));
         // remove all projects on which the user doesn't has read permission
-        $projects = $projects->filter(function(Project $project) {
-            return Bouncer::can('read', $project);
+        $projects = $projects->filter(function(Project $project) use ($user) {
+//            dd($user->can('read', $project));
+            $canRead = Bouncer::can('read', $project);
+            Log::debug("hasPermission: ".($canRead?'true':'false')." for " . $project );
+            return $canRead;
         });
 
         return $projects;

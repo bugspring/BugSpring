@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Bouncer;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -32,6 +33,7 @@ class ProjectApiTest extends TestCase
     {
         parent::setUp();
         $this->user = factory(User::class)->create();
+        Bouncer::allow($this->user)->everything();
     }
 
     /**
