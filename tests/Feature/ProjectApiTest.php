@@ -72,7 +72,7 @@ class ProjectApiTest extends TestCase
             'description' => "A modern Issue Tracker...",
         ];
 
-        $this->json('POST', self::BASE_PATH,$projectData)
+        $this->json('POST', self::BASE_PATH, $projectData)
             ->assertStatus(201)
             ->assertJsonStructure(self::JSON_STRUCTURE)
             ->assertJson($projectData);

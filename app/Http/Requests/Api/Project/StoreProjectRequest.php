@@ -2,8 +2,9 @@
 
 namespace App\Http\Requests\Api\Project;
 
+use App\Models\Project;
 use Illuminate\Foundation\Http\FormRequest;
-
+use Bouncer;
 /**
  * Class StoreProjectRequest
  * @package App\Http\Requests\Api\Project
@@ -20,7 +21,7 @@ class StoreProjectRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return $this->user()->can('create', Project::class);
     }
 
     /**

@@ -27,12 +27,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Bouncer::allow(User::class)->toOwn(Project::class);
-        Bouncer::ownedVia('owner_id');
-
         $this->registerPolicies();
         Passport::routes();
-
-
     }
 }

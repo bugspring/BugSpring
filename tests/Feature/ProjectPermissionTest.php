@@ -69,5 +69,20 @@ class ProjectPermissionTest extends TestCase
     {
         Passport::actingAs($this->user);
 
+        $projectData = [
+            'name' => 'My super awesome project!',
+            'description' => 'It does all you need'
+        ];
+
+
+        $this->json('POST', self::BASE_PATH, $projectData)
+            ->assertStatus(201)
+            ->assertJson($projectData);
+
+        Bouncer::forbid('user')->to('create', Project::class);
+
+        $this->json('POST', self::BASE_PATH, $projectData)
+            ->assertStatus(403)
+            ->assertJson($projectData);
     }
 }
