@@ -1,18 +1,19 @@
 <?php
 
-namespace App\Http\Requests\Api\Project;
+namespace App\Http\Requests\Api\Issue;
 
+use App\Models\Issue;
 use App\Models\Project;
 use Illuminate\Foundation\Http\FormRequest;
-use Bouncer;
+
 /**
- * Class StoreProjectRequest
- * @package App\Http\Requests\Api\Project
+ * Class ShowIssueRequest
+ * @package App\Http\Requests\Api\Issue
  *
- * @property string name
- * @property string description
+ * @property Issue issue
+ * @property Project project
  */
-class StoreProjectRequest extends FormRequest
+class ShowIssueRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,7 +22,7 @@ class StoreProjectRequest extends FormRequest
      */
     public function authorize()
     {
-        return $this->user()->can('create project');
+        return $this->user()->can('read', $this->issue);
     }
 
     /**
@@ -32,8 +33,7 @@ class StoreProjectRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string',
-            'description' => 'required|string'
+            //
         ];
     }
 }

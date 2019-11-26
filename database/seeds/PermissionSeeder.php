@@ -14,6 +14,6 @@ class PermissionSeeder extends Seeder
     {
         Bouncer::allow('user')->toOwn(Project::class);
         Bouncer::ownedVia('owner_id');
-        Bouncer::allow('user')->to('create', Project::class);
+        Bouncer::allow('user')->to('create project');
     }
 }
