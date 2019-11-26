@@ -33,11 +33,11 @@ class ProjectPermissionTest extends TestCase
         $otherUser = factory(User::class)->create();
 
         // These projects should be returned by /api/project
-        $ownProjects = factory(Project::class, 1)->create([
+        $ownProjects = factory(Project::class, 50)->create([
             'owner_id' => $this->user->id,
             'description' => 'own',
         ]);
-        $linkedProjects = factory(Project::class, 1)->create([
+        $linkedProjects = factory(Project::class, 50)->create([
             'owner_id' => $otherUser->id,
             'description' => 'linked with permission',
         ])->each(function(Project $project) {
