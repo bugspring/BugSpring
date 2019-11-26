@@ -98,6 +98,20 @@ class ProjectApiTest extends TestCase
         ])->assertStatus(422);
     }
 
+    public function testShowReturnsOneProject()
+    {
+        Passport::actingAs($this->user);
+
+        $project = factory(Project::class)->create([
+            'owner_id' => $this->user->id,
+        ]);
+
+        $this->json('GET', self::BASE_PATH . "/{$project->id}")
+            ->assertStatus(200)
+            ->assertJsonStructure(self::JSON_STRUCTURE)
+            ->assertJson($project->toArray());
+
+    }
 
     public function testUpdateModifiesAProjectInTheDatabase()
     {

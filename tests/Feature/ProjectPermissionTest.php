@@ -74,15 +74,83 @@ class ProjectPermissionTest extends TestCase
             'description' => 'It does all you need'
         ];
 
-
         $this->json('POST', self::BASE_PATH, $projectData)
             ->assertStatus(201)
             ->assertJson($projectData);
 
-        Bouncer::forbid('user')->to('create', Project::class);
+        Bouncer::forbid($this->user)->to('create', Project::class);
+        Bouncer::refresh();
 
         $this->json('POST', self::BASE_PATH, $projectData)
-            ->assertStatus(403)
-            ->assertJson($projectData);
+            ->assertStatus(403);
     }
+
+    public function testShowNeedsReadPermission()
+    {
+        Passport::actingAs($this->user);
+
+        $project = factory(Project::class)->create([
+            'owner_id' => $this->user->id,
+        ]);
+
+        $this->json('GET', self::BASE_PATH . "/{$project->id}")
+            ->assertStatus(200)
+            ->assertJson($project->toArray());
+
+        Bouncer::forbid($this->user)->to('read', $project);
+        Bouncer::refresh();
+
+        $this->json('GET', self::BASE_PATH . "/{$project->id}")
+            ->assertStatus(403);
+    }
+
+    public function testUpdateNeedsUpdatePermission()
+    {
+        Passport::actingAs($this->user);
+
+        $project = factory(Project::class)->create([
+            'owner_id' => $this->user->id,
+        ]);
+
+        $updateData = [
+            'name' => 'My super awesome project!',
+            'description' => 'It does all you need'
+        ];
+
+        $this->json('PUT', self::BASE_PATH . "/{$project->id}", $updateData)
+            ->assertStatus(200)
+            ->assertJson($updateData);
+
+        Bouncer::forbid($this->user)->to('update', $project);
+        Bouncer::refresh();
+
+        $this->json('PUT', self::BASE_PATH . "/{$project->id}", $updateData)
+            ->assertStatus(403);
+    }
+
+    public function testDestroyNeedsDeletePermission()
+    {
+        Passport::actingAs($this->user);
+
+        $project = factory(Project::class)->create([
+            'owner_id' => $this->user->id,
+        ]);
+
+        $this->json('DELETE', self::BASE_PATH . "/{$project->id}")
+            ->assertStatus(200)
+            ->assertJson($project->toArray());
+
+
+
+        $project = factory(Project::class)->create([
+            'owner_id' => $this->user->id,
+        ]);
+        Bouncer::forbid($this->user)->to('delete', $project);
+        Bouncer::refresh();
+
+
+        $this->json('DELETE', self::BASE_PATH . "/{$project->id}")
+            ->assertStatus(403);
+    }
+
 }

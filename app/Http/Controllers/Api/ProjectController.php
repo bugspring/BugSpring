@@ -81,9 +81,9 @@ class ProjectController extends Controller
      * @param  ShowProjectRequest $request
      * @return Project
      */
-    public function show(ShowProjectRequest $request, $id)
+    public function show(ShowProjectRequest $request, Project $project)
     {
-        return $this->projectRepository->getProjectById($id);
+        return $this->projectRepository->getProjectById($project->id);
     }
 
     /**
