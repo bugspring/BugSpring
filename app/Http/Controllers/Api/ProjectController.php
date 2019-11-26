@@ -9,9 +9,12 @@ use App\Http\Requests\Api\Project\ShowProjectRequest;
 use App\Http\Requests\Api\Project\StoreProjectRequest;
 use App\Http\Requests\Api\Project\UpdateProjectRequest;
 use App\Models\Project;
+use App\Models\User;
 use App\Repositories\ProjectRepository;
 use Exception;
 use Illuminate\Http\Request;
+use Bouncer;
+use Illuminate\Support\Facades\Log;
 
 class ProjectController extends Controller
 {
@@ -33,9 +36,24 @@ class ProjectController extends Controller
      */
     public function index(IndexProjectsRequest $request)
     {
+        /** @var User $user */
         $user = $request->user();
+        Bouncer::allow(User::class)->toOwn(Project::class);
+        Bouncer::ownedVia('owner_id');
+
+//        dd($user->can('read',$user->ownProjects->first()));
+
+        // get own projects
         $projects = $this->projectRepository->getProjectsOfUser($user->id);
+        // add linked projects
         $projects = $projects->merge($this->projectRepository->getLinkedProjects($user->id));
+        // remove all projects on which the user doesn't has read permission
+        $projects = $projects->filter(function(Project $project) use ($user) {
+//            dd($user->can('read', $project));
+            $canRead = Bouncer::can('read', $project);
+            Log::debug("hasPermission: ".($canRead?'true':'false')." for " . $project );
+            return $canRead;
+        });
 
         return $projects;
     }
@@ -63,9 +81,9 @@ class ProjectController extends Controller
      * @param  ShowProjectRequest $request
      * @return Project
      */
-    public function show(ShowProjectRequest $request, $id)
+    public function show(ShowProjectRequest $request, Project $project)
     {
-        return $this->projectRepository->getProjectById($id);
+        return $this->projectRepository->getProjectById($project->id);
     }
 
     /**

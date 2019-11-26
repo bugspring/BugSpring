@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Bouncer;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -32,6 +33,7 @@ class ProjectApiTest extends TestCase
     {
         parent::setUp();
         $this->user = factory(User::class)->create();
+        Bouncer::allow($this->user)->everything();
     }
 
     /**
@@ -70,7 +72,7 @@ class ProjectApiTest extends TestCase
             'description' => "A modern Issue Tracker...",
         ];
 
-        $this->json('POST', self::BASE_PATH,$projectData)
+        $this->json('POST', self::BASE_PATH, $projectData)
             ->assertStatus(201)
             ->assertJsonStructure(self::JSON_STRUCTURE)
             ->assertJson($projectData);
@@ -96,6 +98,20 @@ class ProjectApiTest extends TestCase
         ])->assertStatus(422);
     }
 
+    public function testShowReturnsOneProject()
+    {
+        Passport::actingAs($this->user);
+
+        $project = factory(Project::class)->create([
+            'owner_id' => $this->user->id,
+        ]);
+
+        $this->json('GET', self::BASE_PATH . "/{$project->id}")
+            ->assertStatus(200)
+            ->assertJsonStructure(self::JSON_STRUCTURE)
+            ->assertJson($project->toArray());
+
+    }
 
     public function testUpdateModifiesAProjectInTheDatabase()
     {

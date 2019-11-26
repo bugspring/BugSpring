@@ -2,12 +2,14 @@
 
 namespace App\Http\Requests\Api\Project;
 
+use App\Models\Project;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * @property int owner_id
  * @property string name
  * @property string description
+ * @property Project project
  */
 class UpdateProjectRequest extends FormRequest
 {
@@ -18,7 +20,7 @@ class UpdateProjectRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return $this->user()->can('update', $this->project);
     }
 
     /**

@@ -42,14 +42,15 @@ You need at least to set the database configuration. The rest can be left at the
 > nano .env
 ```
 
-Now ```composer install``` can be called.
-This will 
-* install php dependencies
-* generate the APP_KEY (set in the .env)
-* run the database migrations
-* install laravel/passport
+
+Install the application:
 ```shell
 > composer install
+> php artisan key:generate
+> php artisan migrate
+> php artisan passport:install
+> php artisan db:seed
+> npm install
 ```
 
 ## Running the tests

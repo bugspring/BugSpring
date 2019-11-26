@@ -2,8 +2,15 @@
 
 namespace App\Http\Requests\Api\Project;
 
+use App\Models\Project;
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * Class DestroyProjectRequest
+ * @package App\Http\Requests\Api\Project
+ *
+ * @property Project project
+ */
 class DestroyProjectRequest extends FormRequest
 {
     /**
@@ -13,7 +20,7 @@ class DestroyProjectRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return $this->user()->can('delete', $this->project);
     }
 
     /**

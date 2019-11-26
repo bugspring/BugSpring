@@ -2,10 +2,17 @@
 
 namespace App\Http\Requests\Api\Project;
 
+use App\Models\Project;
 use App\Models\User;
 use App\Repositories\UserRepository;
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * Class ShowProjectRequest
+ * @package App\Http\Requests\Api\Project
+ *
+ * @property Project project
+ */
 class ShowProjectRequest extends FormRequest
 {
     /**
@@ -15,13 +22,7 @@ class ShowProjectRequest extends FormRequest
      */
     public function authorize()
     {
-        /** @var UserRepository $userRepo */
-        $userRepo = app(UserRepository::class);
-
-        /** @var User $user */
-        $user = $this->user();
-
-        return $userRepo->userHasProject($user->id, $this->project_id);
+        return $this->user()->can('read', $this->project);
     }
 
     /**
