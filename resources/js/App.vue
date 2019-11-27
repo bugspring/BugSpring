@@ -1,9 +1,20 @@
 <template>
     <v-app>
-        <v-app-bar app color="primary" dark>
+        <v-navigation-drawer app clipped>
+
+        </v-navigation-drawer>
+        <v-app-bar color="primary" app dark clipped-left>
             <v-toolbar-title>BugSpring</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-btn icon>
+                <v-icon>mdi-account-badge-horizontal-outline</v-icon>
+            </v-btn>
         </v-app-bar>
-        <router-view></router-view>
+
+        <v-content class="fill-height">
+            <router-view></router-view>
+        </v-content>
+
     </v-app>
 </template>
 
