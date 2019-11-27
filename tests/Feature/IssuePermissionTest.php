@@ -94,4 +94,48 @@ class IssuePermissionTest extends TestCase
         $this->json('GET', $this->basePath . "/{$issue->id}")
             ->assertStatus(403);
     }
+
+    public function testUpdateNeedsUpdatePermission()
+    {
+        Passport::actingAs($this->user);
+
+        $issue = factory(Issue::class)->create([
+            'project_id' => $this->project->id
+        ]);
+
+        $this->user->allow('update', $issue);
+
+        $this->json('PUT', $this->basePath . "/{$issue->id}", ['name' => 'Lorem Ipsum'])
+            ->assertStatus(200);
+
+        $this->user->forbid('update', $issue);
+        Bouncer::refresh();
+
+        $this->json('PUT', $this->basePath . "/{$issue->id}", ['name' => 'dolor sit'])
+            ->assertStatus(403);
+    }
+
+    public function testDestroyNeedsDeletePermission()
+    {
+        Passport::actingAs($this->user);
+
+        $issue = factory(Issue::class)->create([
+            'project_id' => $this->project->id
+        ]);
+
+        $this->user->allow('delete', $issue);
+
+        $this->json('DELETE', $this->basePath . "/{$issue->id}")
+            ->assertStatus(200);
+
+
+        $issue = factory(Issue::class)->create([
+            'project_id' => $this->project->id
+        ]);
+
+        $this->user->forbid('delete', $issue);
+
+        $this->json('DELETE', $this->basePath . "/{$issue->id}")
+            ->assertStatus(403);
+    }
 }

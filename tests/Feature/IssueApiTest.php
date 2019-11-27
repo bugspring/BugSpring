@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Passport\Passport;
+use Mockery\Generator\StringManipulation\Pass\Pass;
 use Tests\TestCase;
 
 class IssueApiTest extends TestCase
@@ -119,6 +120,75 @@ class IssueApiTest extends TestCase
 
         $this->json('GET', $this->basePath . "/{$issue->id}")
             ->assertStatus(404);
+    }
+
+    public function testUpdateModifiesAIssueInTheDatabase()
+    {
+        Passport::actingAs($this->user);
+
+        $issue = factory(Issue::class)->create([
+            'project_id' => $this->project->id
+        ]);
+
+        $updateData = [
+            'name' => 'Dropping databases makes users mad...'
+        ];
+
+        $this->json('PUT', $this->basePath . "/{$issue->id}", $updateData)
+            ->assertStatus(200)
+            ->assertJsonStructure(self::JSON_STRUCTURE)
+            ->assertJson($updateData);
+
+        $this->assertDatabaseHas('issues', $updateData);
+    }
+
+    public function testUpdateIssueMustExistInReferencedProject()
+    {
+        Passport::actingAs($this->user);
+
+        $issue = factory(Issue::class)->create([
+            'project_id' => (factory(Project::class)->create([
+                'owner_id' => (factory(User::class)->create())->id
+            ]))->id
+        ]);
+
+        $updateData = [
+            'name' => 'Mad users make a magnificent mob'
+        ];
+
+        $this->json('PUT', $this->basePath . "/{$issue->id}", $updateData)
+            ->assertStatus(404);
+    }
+
+    public function testDestroyDeletesTheIssueInTheDatabase()
+    {
+        Passport::actingAs($this->user);
+
+        $issue = factory(Issue::class)->create([
+            'project_id' => $this->project->id
+        ]);
+
+        $this->json('DELETE', $this->basePath . "/{$issue->id}")
+            ->assertStatus(200)
+            ->assertJsonStructure(self::JSON_STRUCTURE)
+            ->assertJson($issue->toArray());
+
+        $this->assertDatabaseMissing('issues', $issue->toArray());
 
     }
+
+    public function testDestroyIssueMustExistInReferencedProject()
+    {
+        Passport::actingAs($this->user);
+
+        $issue = factory(Issue::class)->create([
+            'project_id' => (factory(Project::class)->create([
+                'owner_id' => (factory(User::class)->create())->id
+            ]))->id
+        ]);
+
+        $this->json('DELETE', $this->basePath . "/{$issue->id}")
+            ->assertStatus(404);
+    }
+
 }

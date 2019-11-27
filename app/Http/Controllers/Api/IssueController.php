@@ -7,7 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Issue\IndexIssueRequest;
 use App\Http\Requests\Api\Issue\ShowIssueRequest;
 use App\Http\Requests\Api\Issue\StoreIssueRequest;
+use App\Http\Requests\Api\Issue\UpdateIssueRequest;
 use App\Http\Requests\Api\Project\ShowProjectRequest;
+use App\Http\Requests\DestroyIssueRequest;
 use App\Models\Issue;
 use App\Models\Project;
 use App\Repositories\IssueRepository;
@@ -77,23 +79,37 @@ class IssueController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param UpdateIssueRequest $request
+     * @param Project $project
+     * @param Issue $issue
+     * @return Issue
      */
-    public function update(Request $request, $id)
+    public function update(UpdateIssueRequest $request, Project $project, Issue $issue)
     {
-        //
+        if($project->id != $issue->project_id)
+        {
+            throw new ApiException("Issue id not found in project", 404);
+        }
+
+        return $this->issueRepository->updateIssue($issue, [
+            'name' => $request->name
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param DestroyIssueRequest $request
+     * @param Issue $issue
+     * @return Issue
      */
-    public function destroy($id)
+    public function destroy(DestroyIssueRequest $request,Project $project, Issue $issue)
     {
-        //
+        if($project->id != $issue->project_id)
+        {
+            throw new ApiException("Issue id not found in project", 404);
+        }
+
+        return $this->issueRepository->deleteIssue($issue);
     }
 }
