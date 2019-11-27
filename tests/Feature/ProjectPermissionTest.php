@@ -78,7 +78,7 @@ class ProjectPermissionTest extends TestCase
             ->assertStatus(201)
             ->assertJson($projectData);
 
-        Bouncer::forbid($this->user)->to('create', Project::class);
+        Bouncer::forbid($this->user)->to('create project');
         Bouncer::refresh();
 
         $this->json('POST', self::BASE_PATH, $projectData)

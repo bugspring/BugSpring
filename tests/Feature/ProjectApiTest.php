@@ -36,11 +36,7 @@ class ProjectApiTest extends TestCase
         Bouncer::allow($this->user)->everything();
     }
 
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
+
     public function testIndexReturnsAllOwnedAndLinkedProjects()
     {
         Passport::actingAs($this->user);
