@@ -9,9 +9,11 @@ require('./bootstrap');
 window.Vue = require('vue');
 
 import 'vuetify/dist/vuetify.min.css'
-import '@mdi/font/css/materialdesignicons.css'
 
+import '@mdi/font/css/materialdesignicons.css'
 import Vue from 'vue'
+
+import VueI18n from 'vue-i18n'
 import Vuetify from 'vuetify'
 
 import App from './App.vue'
@@ -56,11 +58,16 @@ Vue.component(
 
 Vue.config.productionTip = false;
 
+Vue.use(VueI18n);
 Vue.use(Vuetify);
 
 const app = new Vue({
     router,
     store,
+    i18n: new VueI18n({
+        locale: 'en',
+
+    }),
     vuetify: new Vuetify(),
     render: function(h) { return h(App);},
     el: '#app',

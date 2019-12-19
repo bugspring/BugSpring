@@ -1,11 +1,30 @@
 <template>
     <v-app>
-        <v-navigation-drawer app clipped>
-
-        </v-navigation-drawer>
         <v-app-bar color="primary" app dark clipped-left>
             <v-toolbar-title>BugSpring</v-toolbar-title>
+            <v-menu open-on-hover offset-y>
+                <template v-slot:activator="{ on }">
+                    <v-btn v-on="on">
+                        {{ $t("Projects") }}
+                    </v-btn>
+                </template>
+            </v-menu>
             <v-spacer></v-spacer>
+            <v-menu open-on-hover offset-y>
+                <template v-slot:activator="{ on }">
+                    <v-btn v-on="on" icon>
+                        <v-icon>mdi-plus</v-icon>
+                    </v-btn>
+                </template>
+                <v-list>
+                    <v-list-item>
+                        <v-list-item-title>Add Project</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item>
+                        <v-list-item-title>Add Issue</v-list-item-title>
+                    </v-list-item>
+                </v-list>
+            </v-menu>
             <v-btn icon>
                 <v-icon>mdi-account-badge-horizontal-outline</v-icon>
             </v-btn>
