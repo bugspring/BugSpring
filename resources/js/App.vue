@@ -12,81 +12,19 @@
                         <v-spacer></v-spacer>
 
                         <v-divider vertical class="ma-0"></v-divider>
-                        <v-menu offset-y value="true">
-                            <template v-slot:activator="{ on }">
-                                <v-btn v-on="on" text>Projects</v-btn>
-                            </template>
-                            <v-card class="pr-2">
-                                <v-row>
-                                    <v-col lg="4" class="pr-0 pt-0">
-                                        <v-list>
-                                            <v-list-item @click="">
-                                                Your Projects
-                                            </v-list-item>
-                                            <v-list-item @click="">
-                                                Starred Projects
-                                            </v-list-item>
-                                            <v-list-item @click="">
-                                                Explore Projects
-                                            </v-list-item>
-                                        </v-list>
-                                    </v-col>
-                                    <v-divider vertical class="ma-0"></v-divider>
-                                    <v-col>
-                                        <v-text-field outlined
-                                                      dense
-                                                      label="search"
-                                                      append-icon="mdi-magnify"
-                                                      @click.stop=""></v-text-field>
-                                        <p class="font-weight-black">Frequently visited</p>
-
-                                        <v-list>
-                                            <v-list-item>
-                                                Projects you visit often will appear here
-                                            </v-list-item>
-                                        </v-list>
-                                    </v-col>
-                                </v-row>
-                            </v-card>
-                        </v-menu>
+                        <FindEnityMenu own-title="Your Projects"
+                                       starred-title="Starred Projects"
+                                       browse-title="Explore Projects"
+                                       no-frequently-title="Projects you visit often will appear here">
+                            <v-btn v-on="on" text>Projects</v-btn>
+                        </FindEnityMenu>
                         <v-divider vertical class="ma-0"></v-divider>
-                        <v-menu offset-y>
-                            <template v-slot:activator="{ on }">
-                                <v-btn v-on="on" text>Issues</v-btn>
-                            </template>
-                            <v-card class="pr-2">
-                                <v-row>
-                                    <v-col lg="4" class="pr-0 pt-0" style="background-color: lightgray">
-                                        <v-list color="transparent">
-                                            <v-list-item @click="">
-                                                Your Issues
-                                            </v-list-item>
-                                            <v-list-item @click="">
-                                                Starred Issues
-                                            </v-list-item>
-                                            <v-list-item @click="">
-                                                Explore Issues
-                                            </v-list-item>
-                                        </v-list>
-                                    </v-col>
-                                    <v-divider vertical class="ma-0"></v-divider>
-                                    <v-col>
-                                        <v-text-field outlined
-                                                      dense
-                                                      label="search"
-                                                      append-icon="mdi-magnify"
-                                                      @click.stop=""></v-text-field>
-                                        <p class="font-weight-black">Frequently visited</p>
-
-                                        <v-list>
-                                            <v-list-item>
-                                                Issues you visit often will appear here
-                                            </v-list-item>
-                                        </v-list>
-                                    </v-col>
-                                </v-row>
-                            </v-card>
-                        </v-menu>
+                        <FindEnityMenu own-title="Your Issues"
+                                       starred-title="Starred Issues"
+                                       browse-title="Explore Issues"
+                                       no-frequently-title="Issues you visit often will appear here">
+                            <v-btn v-on="on" text>Issues</v-btn>
+                        </FindEnityMenu>
 
                         <v-divider vertical class="ma-0"></v-divider>
 
@@ -172,8 +110,10 @@
 </template>
 
 <script>
+    import FindEnityMenu from "./components/app/FindEnityMenu";
     export default {
         name: "App.vue",
+        components: {FindEnityMenu},
         methods: {
             noop(){
 
