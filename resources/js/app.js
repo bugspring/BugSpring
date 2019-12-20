@@ -3,8 +3,6 @@
  * includes Vue and other libraries. It is a great starting point when
  * building robust, powerful web applications using Vue and Laravel.
  */
-import Lang from "./util/lang";
-
 require('./bootstrap');
 
 window.Vue = require('vue');
@@ -13,6 +11,9 @@ import 'vuetify/dist/vuetify.min.css'
 
 import '@mdi/font/css/materialdesignicons.css'
 import Vue from 'vue'
+import VueI18n from 'vue-i18n'
+
+import en from '../lang/en/messages'
 
 import Vuetify from 'vuetify'
 
@@ -55,7 +56,6 @@ Vue.component(
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
-console.log(Lang.get('lorem'));
 
 Vue.config.productionTip = false;
 
@@ -64,6 +64,13 @@ Vue.use(Vuetify);
 const app = new Vue({
     router,
     store,
+    i18n: new VueI18n({
+        locale: 'en',
+        messages: {
+            en: en,
+        }
+
+    }),
     vuetify: new Vuetify(),
     render: function(h) { return h(App);},
     el: '#app',
