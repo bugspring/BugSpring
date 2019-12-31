@@ -1,3 +1,20 @@
 {
-    "lorem": "ipsum"
+    "search": "search",
+    "frequently-visited": "Frequently visited",
+    "project": {
+        "label": "Project | Projects",
+        "own": "Your Projects",
+        "starred": "Starred Projects",
+        "browse": "Explore Projects",
+        "no-frequently": "Projects you visit often will appear here",
+        "add": "New Project"
+    },
+    "issue": {
+        "label": "Issue | Issues",
+        "own": "Your Issues",
+        "starred": "Starred Issues",
+        "browse": "Explore Issues",
+        "no-frequently": "Issues you visit often will appear here",
+        "add": "New Issue"
+    }
 }
