@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Date;
 
 /**
@@ -16,10 +17,19 @@ use Illuminate\Support\Facades\Date;
  * @property Date created_at
  * @property Date updated_at
  * @property Date deleted_at
+ *
+ * @property User owner
+ * @property Collection<User> Users
+ * @property Collection<Issue> Issues
  */
 class Project extends Model
 {
     protected $guarded = [];
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'owner_id');
+    }
 
     public function users()
     {

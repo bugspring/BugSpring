@@ -13,9 +13,9 @@
 
                         <v-divider vertical class="ma-0"></v-divider>
                         <EnityMenu :label="$tc('project.label', 2)"
-                                   :own-title="$t('project.own')" @own-click="$router.push('/projects/own')"
-                                   :starred-title="$t('project.starred')" @starred-click="$router.push('/projects/starred')"
-                                   :browse-title="$t('project.browse')" @browse-click="$router.push('/projects/browse')"
+                                   :own-title="$t('project.own')" @own-click="listProjects('own')"
+                                   :starred-title="$t('project.starred')" @starred-click="listProjects('starred')"
+                                   :browse-title="$t('project.browse')" @browse-click="listProjects('browse')"
                                    :no-frequently-title="$t('project.no-frequently')">
                         </EnityMenu>
 
@@ -65,6 +65,7 @@
     import EnityMenu from "./components/app/EnityMenu";
     import AddEntityMenu from "./components/app/AddEntityMenu";
     import AccountMenu from "./components/app/AccountMenu";
+    import Projects from "./views/Projects";
 
     export default {
         name: "App.vue",
@@ -74,6 +75,9 @@
             EnityMenu
         },
         methods: {
+            listProjects(filter) {
+                this.$router.push({name: Projects.name, params:{filter}});
+            }
         }
     }
 </script>

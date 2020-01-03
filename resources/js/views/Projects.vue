@@ -10,20 +10,21 @@
         <v-row>
             <v-col>
                 <v-tabs background-color="transparent">
-                    <v-tab to="/projects/own">{{ $t('project.own')}}</v-tab>
-                    <v-tab to="/projects/starred">{{ $t('project.starred')}}</v-tab>
-                    <v-tab to="/projects/browse">{{ $t('project.browse')}}</v-tab>
+                    <v-tab :to="{name: 'Projects', params: {filter: 'own'}}">{{ $t('project.own')}}</v-tab>
+                    <v-tab :to="{name: 'Projects', params: {filter: 'starred'}}">{{ $t('project.starred')}}</v-tab>
+                    <v-tab :to="{name: 'Projects', params: {filter: 'browse'}}">{{ $t('project.browse')}}</v-tab>
                 </v-tabs>
                 <v-divider></v-divider>
             </v-col>
         </v-row>
+
         <v-row>
             <v-col>
-                <v-list>
-                    <v-list-item v-for="(project, index) in projects" :key="index">
-                        <v-list-item-avatar color="amber">
-                            {{project.name.charAt(0).toUpperCase()}}
-                        </v-list-item-avatar>
+                <v-list color="transparent">
+                    <v-list-item v-for="(project, index) in projects" :key="index"
+                                 @click="showProject(project.id)">
+
+                        <list-item-char-avatar :text="project.name"></list-item-char-avatar>
 
                         <v-list-item-content>
                             {{ project.name }}
@@ -77,8 +78,13 @@
 </template>
 
 <script>
+    import {mapActions, mapState} from "vuex";
+    import ListItemCharAvatar from "../components/ListItemCharAvatar";
+    import Project from "./Project";
+
     export default {
         name: "Projects",
+        components: {ListItemCharAvatar},
         data() {
             return {
                 headers: [
@@ -90,13 +96,23 @@
                     },
 
                 ],
-                projects: [
-                    {name: "Bugspring", starred: true, issues:[]},
-                    {name: "Bughunter", starred: false, issues:[]},
-                    {name: "Issue Collection", starred: false, issues:[]},
-                    {name: "Store my stuff", starred: true, issues:[]}
-                ]
             }
+        },
+        computed: {
+            ...mapState('project', [
+                'projects'
+            ]),
+        },
+        methods: {
+            ...mapActions('project', [
+                'reloadProjects'
+            ]),
+            showProject(id) {
+                this.$router.push({name: Project.name, params:{id}});
+            }
+        },
+        mounted() {
+            this.reloadProjects();
         }
     }
 </script>
