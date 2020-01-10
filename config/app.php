@@ -1,5 +1,7 @@
 <?php
 
+use Silber\Bouncer\BouncerServiceProvider;
+
 return [
 
     /*
@@ -176,7 +178,6 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         Laravel\Passport\PassportServiceProvider::class,
-
     ],
 
     /*

@@ -2,9 +2,12 @@
 
 namespace App\Providers;
 
+use App\Models\Project;
 use App\Models\User;
 use App\Observers\UserObserver;
 use Illuminate\Support\ServiceProvider;
+
+use Bouncer;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,6 +28,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // put every user into the role 'user'
         User::observe(UserObserver::class);
+
+        // allow everyone in the role 'user' to own projects
+        Bouncer::allow('user')->toOwn(Project::class);
+        Bouncer::ownedVia(Project::class, 'owner_id');
+        Bouncer::allow('user')->to('create project');
     }
 }
