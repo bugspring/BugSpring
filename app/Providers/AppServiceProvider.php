@@ -32,8 +32,6 @@ class AppServiceProvider extends ServiceProvider
         User::observe(UserObserver::class);
 
         // allow everyone in the role 'user' to own projects
-        Bouncer::allow('user')->toOwn(Project::class);
         Bouncer::ownedVia(Project::class, 'owner_id');
-        Bouncer::allow('user')->to('create project');
     }
 }

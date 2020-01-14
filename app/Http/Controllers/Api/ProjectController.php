@@ -38,9 +38,6 @@ class ProjectController extends Controller
     {
         /** @var User $user */
         $user = $request->user();
-        Bouncer::allow(User::class)->toOwn(Project::class);
-        Bouncer::ownedVia('owner_id');
-
 //        dd($user->can('read',$user->ownProjects->first()));
 
         // get own projects

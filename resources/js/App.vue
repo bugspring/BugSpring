@@ -4,10 +4,12 @@
             <v-row>
                 <v-col align-self="center">
                     <v-container row>
-                        <v-icon>mdi-bug</v-icon>
-                        <v-toolbar-title class="ml-2 headline">
-                            BugSpring
-                        </v-toolbar-title>
+                        <router-link :to="{name: 'Dashboard'}" class="pa-0 ma-0 link">
+                            <v-icon>mdi-bug</v-icon>
+                            <v-toolbar-title class="ml-2 headline">
+                                BugSpring
+                            </v-toolbar-title>
+                        </router-link>
 
                         <v-spacer></v-spacer>
 
@@ -83,5 +85,9 @@
 </script>
 
 <style scoped>
-
+    .link {
+        color: white;
+        display: flex;
+        text-decoration: none;
+    }
 </style>

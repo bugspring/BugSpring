@@ -1,5 +1,10 @@
 <template>
     <v-container>
+        <v-breadcrumbs :items="breadcrumbs">
+            <template v-slot:divider>
+                <v-icon>mdi-chevron-right</v-icon>
+            </template>
+        </v-breadcrumbs>
         <v-row>
             <v-col><span class="title">{{ $tc('project.label', 2) }}</span></v-col>
             <v-col class="text-right">
@@ -81,12 +86,25 @@
     import {mapActions, mapState} from "vuex";
     import ListItemCharAvatar from "../components/ListItemCharAvatar";
     import Project from "./Project";
+    import Dashboard from "./Dashboard";
 
     export default {
         name: "Projects",
         components: {ListItemCharAvatar},
         data() {
             return {
+                breadcrumbs: [
+                    {
+                        text: 'Dashboard',
+                        to: {name: Dashboard.name},
+                        exact: true,
+                        disabled: false,
+                    },
+                    {
+                        text: 'Projeke',
+                        disabled: true,
+                    },
+                ],
                 headers: [
                     {
                         text: 'Name',
