@@ -18,7 +18,6 @@ class CreateProjectUserTable extends Migration
             $table->unsignedBigInteger('project_id');
             $table->unsignedBigInteger('user_id');
             $table->timestamps();
-            $table->softDeletes();
 
             $table->foreign('project_id')
                 ->references('id')

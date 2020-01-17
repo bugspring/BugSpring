@@ -8,12 +8,23 @@ export default {
         current: null,
         projects: null,
     },
+    getters: {
+        favoredProjects(state) {
+            if(!state.projects) return [];
+            return state.projects.filter(project => project.is_favorite);
+        },
+    },
     mutations: {
         setIsLoading(state, isLoading) {
             state.isLoading = isLoading;
         },
         setProjects(state, projects) {
             state.projects = projects;
+        },
+        setProject(state, project) {
+            state.projects = state.projects.map(p => {
+                return project.id === p.id ? project: p;
+            });
         },
         setCurrentProject(state, project) {
             state.current = project;
@@ -42,6 +53,17 @@ export default {
             }).finally(() => {
                 commit('setIsLoading', false);
             });
-        }
+        },
+
+        toggleIsFavorite({commit}, project) {
+            commit('setIsLoading', true);
+
+            project.is_favorite = !project.is_favorite;
+            return projectApi.update(project).then(project => {
+                commit('setProject', project);
+            }).finally(() => {
+                commit('setIsLoading', false);
+            });
+        },
     }
 }

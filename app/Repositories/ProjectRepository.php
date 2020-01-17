@@ -11,22 +11,51 @@ use Illuminate\Support\Collection;
 
 class ProjectRepository
 {
+
     /**
+     * @param int $projectId
      * @param int $userId
-     * @param array $with
-     * @return Collection
+     * @return bool
      */
-    public function getProjectsOfUser(int $userId, array $with = []):Collection
+    public function isFavoredByUser(int $projectId, int $userId)
     {
-        return Project::whereOwnerId($userId)->with($with)->get();
+        return User::whereId($userId)->whereHas('favoredProjects', function($query) use ($projectId) {
+            $query->whereId($projectId);
+        })->exists();
     }
+
+    public function addToFavorites(int $projectId, int $userId)
+    {
+        /** @var User $user */
+        $user = User::find($userId);
+        $user->favoredProjects()->attach($projectId);
+    }
+
+    public function removeFromFavorites(int $projectId, int $userId)
+    {
+        /** @var User $user */
+        $user = User::find($userId);
+        $user->favoredProjects()->detach($projectId);
+    }
+
 
     /**
      * @param int $userId
      * @param array $with
      * @return Collection
      */
-    public function getLinkedProjects(int $userId, array $with = []):Collection
+    public function getProjectsOfUser(int $userId, array $with = []): Collection
+    {
+        return Project::whereOwnerId($userId)->with($with)->get();
+    }
+
+
+    /**
+     * @param int $userId
+     * @param array $with
+     * @return Collection
+     */
+    public function getLinkedProjects(int $userId, array $with = []): Collection
     {
         return User::find($userId)->projects;
     }
@@ -35,7 +64,7 @@ class ProjectRepository
      * @param array $data
      * @return Project
      */
-    public function createProject(array  $data)
+    public function createProject(array $data)
     {
         return Project::create($data);
     }
@@ -45,7 +74,7 @@ class ProjectRepository
      * @param array $with
      * @return Project
      */
-    public function getProjectById(int $id, array $with=[])
+    public function getProjectById(int $id, array $with = [])
     {
         return Project::whereId($id)->with($with)->firstOrFail();
     }

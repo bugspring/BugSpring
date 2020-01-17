@@ -21,7 +21,6 @@ class CreateProjectsTable extends Migration
             $table->text('description');
 
             $table->timestamps();
-            $table->softDeletes();
 
             $table->foreign('owner_id')
                 ->references('id')

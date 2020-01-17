@@ -9,6 +9,7 @@ use Illuminate\Foundation\Http\FormRequest;
  * @property int owner_id
  * @property string name
  * @property string description
+ * @property bool is_favorite
  * @property Project project
  */
 class UpdateProjectRequest extends FormRequest
@@ -33,7 +34,8 @@ class UpdateProjectRequest extends FormRequest
         return [
             'owner_id' => 'sometimes|int|exists:users,id',
             'name' => 'sometimes|string',
-            'description' => 'sometimes|string'
+            'description' => 'sometimes|string',
+            'is_favorite' => 'sometimes|boolean'
         ];
     }
 }
