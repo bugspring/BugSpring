@@ -35,7 +35,7 @@ class ProjectRepository
      * @param array $data
      * @return Project
      */
-    public function createProject(array  $data)
+    public function createProject(array $data)
     {
         return Project::create($data);
     }

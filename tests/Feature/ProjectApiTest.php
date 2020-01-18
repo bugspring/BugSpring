@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\IssueState;
 use Bouncer;
 use App\Models\Project;
 use App\Models\User;
@@ -23,7 +24,15 @@ class ProjectApiTest extends TestCase
         'name',
         'description',
         'created_at',
-        'updated_at'
+        'updated_at',
+
+        'issue_states' => [
+            '*' => [
+                'id',
+                'title',
+                'icon',
+            ],
+        ],
     ];
 
     /** @var User $user */
@@ -36,19 +45,21 @@ class ProjectApiTest extends TestCase
         Bouncer::allow($this->user)->everything();
     }
 
-
     public function testIndexReturnsAllOwnedAndLinkedProjects()
     {
         Passport::actingAs($this->user);
         $otherUser = factory(User::class)->create();
 
         factory(Project::class, 50)->create([
-            'owner_id' => $this->user->id
-        ]);
+            'owner_id' => $this->user->id,
+        ])->each(function (Project $project)  {
+            $project->issue_states()->saveMany(factory(IssueState::class, 5)->make());
+        });
 
         factory(Project::class, 50)->create([
             'owner_id' => $otherUser->id
-        ])->each(function($project){
+        ])->each(function(Project $project){
+            $project->issue_states()->saveMany(factory(IssueState::class, 5)->make());
             $project->users()->save($this->user);
         });
 

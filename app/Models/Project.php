@@ -20,10 +20,16 @@ use Illuminate\Support\Facades\Date;
 class Project extends Model
 {
     protected $guarded = [];
+    protected $with = ['issue_states'];
+    protected $hidden = ['pivot'];
 
     public function users()
     {
         return $this->belongsToMany(User::class);
+    }
+
+    public function issue_states() {
+        return $this->hasMany(IssueState::class);
     }
 
     public function issues()

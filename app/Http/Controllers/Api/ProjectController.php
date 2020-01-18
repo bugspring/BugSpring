@@ -38,22 +38,18 @@ class ProjectController extends Controller
     {
         /** @var User $user */
         $user = $request->user();
-        Bouncer::allow(User::class)->toOwn(Project::class);
-        Bouncer::ownedVia('owner_id');
-
-//        dd($user->can('read',$user->ownProjects->first()));
 
         // get own projects
         $projects = $this->projectRepository->getProjectsOfUser($user->id);
+
         // add linked projects
         $projects = $projects->merge($this->projectRepository->getLinkedProjects($user->id));
+
         // remove all projects on which the user doesn't has read permission
         $projects = $projects->filter(function(Project $project) use ($user) {
-//            dd($user->can('read', $project));
-            $canRead = Bouncer::can('read', $project);
-            Log::debug("hasPermission: ".($canRead?'true':'false')." for " . $project );
-            return $canRead;
+            return Bouncer::can('read', $project);
         });
+
 
         return $projects;
     }
@@ -67,11 +63,14 @@ class ProjectController extends Controller
     public function store(StoreProjectRequest $request)
     {
         $user = $request->user();
-        return $this->projectRepository->createProject([
+        $project = $this->projectRepository->createProject([
             'owner_id' => $user->id,
             'name' => $request->name,
             'description' => $request->description
         ]);
+
+        return response()->json($this->projectRepository->getProjectById($project->id), 201);
+
     }
 
     /**
