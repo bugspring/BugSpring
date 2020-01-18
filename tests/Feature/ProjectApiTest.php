@@ -45,6 +45,52 @@ class ProjectApiTest extends TestCase
         Bouncer::allow($this->user)->everything();
     }
 
+    public function testCanStoreProjectWithIssueStates()
+    {
+        Passport::actingAs($this->user);
+
+        $projectData = [
+            'name' => "BugSpring",
+            'description' => "A modern Issue Tracker...",
+            'issue_states' => [
+                'title' => "open",
+                'icon' => "mdi-checkbox-multiple-blank-outline"
+            ],
+        ];
+
+        dd($this->json('POST', self::BASE_PATH, $projectData));
+        $this->json('POST', self::BASE_PATH, $projectData)
+            ->assertStatus(201)
+            ->assertJsonStructure(self::JSON_STRUCTURE)
+            ->assertJson($projectData);
+
+        $this->assertDatabaseHas('projects', $projectData);
+    }
+
+    public function testCanAddIssueStatesToProject()
+    {
+        Passport::actingAs($this->user);
+
+        $project = factory(Project::class)->create([
+            'owner_id' => $this->user
+        ]);
+
+
+
+        self::assertFalse(true);
+    }
+
+    public function testCanUpdateIssueStatesFromProject()
+    {
+        self::assertFalse(true);
+    }
+
+    public function testCanRemoveIssueStatesFromProject()
+    {
+        self::assertFalse(true);
+    }
+
+
     public function testIndexReturnsAllOwnedAndLinkedProjects()
     {
         Passport::actingAs($this->user);

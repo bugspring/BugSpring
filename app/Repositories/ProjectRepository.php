@@ -41,6 +41,16 @@ class ProjectRepository
     }
 
     /**
+     * @param Project $project
+     * @param $data
+     * @return Project
+     */
+    public function createIssueStateForProject(Project $project, $data)
+    {
+        return $project->issue_states()->create($data);
+    }
+
+    /**
      * @param int $id
      * @param array $with
      * @return Project

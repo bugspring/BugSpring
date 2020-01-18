@@ -12,6 +12,7 @@ use App\Models\Project;
 use App\Models\User;
 use App\Repositories\ProjectRepository;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Bouncer;
 use Illuminate\Support\Facades\Log;
@@ -58,7 +59,7 @@ class ProjectController extends Controller
      * Store a newly created resource in storage.
      *
      * @param StoreProjectRequest $request
-     * @return Project
+     * @return JsonResponse
      */
     public function store(StoreProjectRequest $request)
     {
@@ -69,8 +70,16 @@ class ProjectController extends Controller
             'description' => $request->description
         ]);
 
-        return response()->json($this->projectRepository->getProjectById($project->id), 201);
+        if($request->has('issue_states'))
+        {
+            foreach ($request->issue_states as $issue_state)
+            {
+                dd($issue_state);
+                $this->projectRepository->createIssueStateForProject($project, $issue_state);
+            }
+        }
 
+        return response()->json($this->projectRepository->getProjectById($project->id), 201);
     }
 
     /**

@@ -26,6 +26,21 @@ class ProjectPermissionTest extends TestCase
         $this->user = factory(User::class)->create();
     }
 
+    public function testCanAddIssueStatesToProjectsWithModifyPermission()
+    {
+        $this->assertFalse(true);
+    }
+
+    public function testCanUpdateIssueStatesFromProjectsWithModifyPermission()
+    {
+        $this->assertFalse(true);
+    }
+
+    public function testCanRemoveIssueStatesFromProjectsWithModifyPermission()
+    {
+        $this->assertFalse(true);
+    }
+
     public function testIndexOnlyListsProjectsWithReadPermission()
     {
         Passport::actingAs($this->user);
