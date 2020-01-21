@@ -53,18 +53,38 @@ class ProjectApiTest extends TestCase
             'name' => "BugSpring",
             'description' => "A modern Issue Tracker...",
             'issue_states' => [
-                'title' => "open",
-                'icon' => "mdi-checkbox-multiple-blank-outline"
+                [
+                    'title' => "open",
+                    'icon' => "mdi-checkbox-multiple-blank-outline"
+                ],
+                [
+                    'title' => "in dev",
+                    'icon' => "mdi-progress-wrench"
+                ],
+                [
+                    'title' => "fixed",
+                    'icon' => "mdi-check-box-multiple-outline"
+                ],
+                [
+                    'title' => "won't fix",
+                    'icon' => "mdi-close-box-multiple"
+                ]
             ],
         ];
 
-        dd($this->json('POST', self::BASE_PATH, $projectData));
         $this->json('POST', self::BASE_PATH, $projectData)
             ->assertStatus(201)
             ->assertJsonStructure(self::JSON_STRUCTURE)
             ->assertJson($projectData);
 
-        $this->assertDatabaseHas('projects', $projectData);
+        $this->assertDatabaseHas('projects', [
+            'name' => $projectData['name'],
+            'description' => $projectData['description']
+        ]);
+        foreach($projectData['issue_states'] as $issue_state)
+        {
+            $this->assertDatabaseHas('issue_states', $issue_state);
+        }
     }
 
     public function testCanAddIssueStatesToProject()
@@ -75,9 +95,35 @@ class ProjectApiTest extends TestCase
             'owner_id' => $this->user
         ]);
 
+        $issue_states = [
+            [
+                'title' => "open",
+                'icon' => "mdi-checkbox-multiple-blank-outline"
+            ],
+            [
+                'title' => "in dev",
+                'icon' => "mdi-progress-wrench"
+            ],
+            [
+                'title' => "fixed",
+                'icon' => "mdi-check-box-multiple-outline"
+            ],
+            [
+                'title' => "won't fix",
+                'icon' => "mdi-close-box-multiple"
+            ]
+        ];
 
+        dd($this->json('PUT', self::BASE_PATH . "/{$project->id}", ['issue_states' => $issue_states]));
+        $this->json('PUT', self::BASE_PATH . "/{$project->id}", ['issue_states' => $issue_states])
+            ->assertStatus(200)
+            ->assertJson(['issue_states' => $issue_states]);
 
-        self::assertFalse(true);
+        foreach($issue_states as $issue_state)
+        {
+            $this->assertDatabaseHas('issue_states', $issue_state);
+        }
+
     }
 
     public function testCanUpdateIssueStatesFromProject()

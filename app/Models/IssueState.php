@@ -17,6 +17,13 @@ use Illuminate\Database\Eloquent\Model;
 class IssueState extends Model
 {
 
+    protected $fillable = [
+        'id',
+        'title',
+        'icon',
+        'project_id'
+    ];
+
     public function project() {
         return $this->belongsTo(Project::class);
     }

@@ -65,10 +65,10 @@ class ProjectRepository
      * @param array $data
      * @return Project
      */
-    public function updateProject(Project $project, array $data)
+    public function updateProject(Project $project, array $data, array $with=[])
     {
         $project->update($data);
-        return $this->getProjectById($project->id);
+        return $this->getProjectById($project->id, $with);
     }
 
     /**

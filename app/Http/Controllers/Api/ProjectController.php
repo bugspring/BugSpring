@@ -74,7 +74,6 @@ class ProjectController extends Controller
         {
             foreach ($request->issue_states as $issue_state)
             {
-                dd($issue_state);
                 $this->projectRepository->createIssueStateForProject($project, $issue_state);
             }
         }
@@ -113,6 +112,17 @@ class ProjectController extends Controller
         }
         if($request->has('description')) {
             $updateData['description'] = $request->description;
+        }
+
+        if($request->has('issue_states')) {
+
+            $project->issue_states()->sync($request->issue_states);
+
+            foreach ($request->issue_states as $issue_state) {
+                if(!array_key_exists('id')) {
+                    $project->issue_states()->create($issue_state);
+                }
+            }
         }
 
         return $this->projectRepository->updateProject($project, $updateData);

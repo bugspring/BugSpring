@@ -37,8 +37,8 @@ class StoreProjectRequest extends FormRequest
             'name' => 'required|string',
             'description' => 'required|string',
             'issue_states' => 'sometimes|array',
-            'issue_states.title' => 'required|string',
-            'issue_states.icon' => 'required|string|in:'.implode(',', MaterialDesignIcons::NAMES),
+            'issue_states.*.title' => 'required|string|distinct',
+            'issue_states.*.icon'  => 'required|string',
         ];
     }
 }
