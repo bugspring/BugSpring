@@ -8,8 +8,10 @@ use App\Http\Requests\Api\Project\IndexProjectsRequest;
 use App\Http\Requests\Api\Project\ShowProjectRequest;
 use App\Http\Requests\Api\Project\StoreProjectRequest;
 use App\Http\Requests\Api\Project\UpdateProjectRequest;
+use App\Models\IssueState;
 use App\Models\Project;
 use App\Models\User;
+use App\Repositories\IssueStateRepository;
 use App\Repositories\ProjectRepository;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -23,10 +25,16 @@ class ProjectController extends Controller
      * @var ProjectRepository
      */
     private $projectRepository;
+    /**
+     * @var IssueStateRepository
+     */
+    private $issueStateRepository;
 
-    public function __construct(ProjectRepository $projectRepository)
+    public function __construct(ProjectRepository $projectRepository,
+                                IssueStateRepository $issueStateRepository)
     {
         $this->projectRepository = $projectRepository;
+        $this->issueStateRepository = $issueStateRepository;
     }
 
     /**
@@ -115,17 +123,10 @@ class ProjectController extends Controller
         }
 
         if($request->has('issue_states')) {
-
-            $project->issue_states()->sync($request->issue_states);
-
-            foreach ($request->issue_states as $issue_state) {
-                if(!array_key_exists('id')) {
-                    $project->issue_states()->create($issue_state);
-                }
-            }
+            $this->issueStateRepository->syncWithProject($project->id, $request->issue_states);
         }
 
-        return $this->projectRepository->updateProject($project, $updateData);
+        return $this->projectRepository->updateProject($project, $updateData, ['issue_states']);
     }
 
     /**

@@ -114,7 +114,6 @@ class ProjectApiTest extends TestCase
             ]
         ];
 
-        dd($this->json('PUT', self::BASE_PATH . "/{$project->id}", ['issue_states' => $issue_states]));
         $this->json('PUT', self::BASE_PATH . "/{$project->id}", ['issue_states' => $issue_states])
             ->assertStatus(200)
             ->assertJson(['issue_states' => $issue_states]);
