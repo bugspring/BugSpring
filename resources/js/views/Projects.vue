@@ -1,10 +1,5 @@
 <template>
     <v-container>
-        <v-breadcrumbs :items="breadcrumbs">
-            <template v-slot:divider>
-                <v-icon>mdi-chevron-right</v-icon>
-            </template>
-        </v-breadcrumbs>
         <v-row>
             <v-col><span class="title">{{ $tc('project.label', 2) }}</span></v-col>
             <v-col class="text-right">
@@ -26,7 +21,7 @@
         <v-row>
             <v-col>
                 <v-list color="transparent">
-                    <v-list-item v-for="(project, index) in projects" :key="index"
+                    <v-list-item v-for="(project, index) in filteredProjects" :key="index"
                                  @click="showProject(project.id)">
 
                         <list-item-char-avatar :text="project.name"></list-item-char-avatar>
@@ -71,8 +66,8 @@
 
                             </v-badge>
                         <v-list-item-action>
-                            <v-btn icon>
-                                <v-icon>{{project.starred?'mdi-star':'mdi-star-outline'}}</v-icon>
+                            <v-btn icon @click.stop="toggleIsFavorite(project)">
+                                <v-icon>{{project.is_favorite?'mdi-star':'mdi-star-outline'}}</v-icon>
                             </v-btn>
                         </v-list-item-action>
                     </v-list-item>
@@ -83,51 +78,45 @@
 </template>
 
 <script>
-    import {mapActions, mapState} from "vuex";
+    import {mapActions, mapGetters, mapState} from "vuex";
     import ListItemCharAvatar from "../components/ListItemCharAvatar";
     import Project from "./Project";
     import Dashboard from "./Dashboard";
+    import Breadcrumbs from "../components/Breadcrumbs";
 
     export default {
         name: "Projects",
-        components: {ListItemCharAvatar},
-        data() {
-            return {
-                breadcrumbs: [
-                    {
-                        text: 'Dashboard',
-                        to: {name: Dashboard.name},
-                        exact: true,
-                        disabled: false,
-                    },
-                    {
-                        text: 'Projeke',
-                        disabled: true,
-                    },
-                ],
-                headers: [
-                    {
-                        text: 'Name',
-                        align: 'left',
-                        sortable: true,
-                        value: 'name'
-                    },
-
-                ],
-            }
-        },
+        components: {Breadcrumbs, ListItemCharAvatar},
         computed: {
-            ...mapState('project', [
-                'projects'
-            ]),
+            ...mapState('project', {
+                ownProjects: state => state.projects,
+            }),
+            ...mapGetters('project', {
+                starredProjects: 'favoredProjects',
+            }),
+
+
+            filteredProjects() {
+                switch(this.$route.params.filter) {
+                    case 'own':
+                        return this.ownProjects;
+                    case 'starred':
+                        return this.starredProjects;
+                    case 'browse':
+                        return [];
+                }
+                return [];
+            },
+
         },
         methods: {
             ...mapActions('project', [
-                'reloadProjects'
+                'reloadProjects',
+                'toggleIsFavorite',
             ]),
             showProject(id) {
                 this.$router.push({name: Project.name, params:{id}});
-            }
+            },
         },
         mounted() {
             this.reloadProjects();

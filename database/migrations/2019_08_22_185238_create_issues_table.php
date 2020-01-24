@@ -18,7 +18,6 @@ class CreateIssuesTable extends Migration
             $table->string('name');
             $table->unsignedBigInteger('project_id');
             $table->timestamps();
-            $table->softDeletes();
 
             $table->foreign('project_id')
                 ->references('id')
