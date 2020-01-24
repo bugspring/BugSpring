@@ -35,9 +35,19 @@ class ProjectRepository
      * @param array $data
      * @return Project
      */
-    public function createProject(array  $data)
+    public function createProject(array $data)
     {
         return Project::create($data);
+    }
+
+    /**
+     * @param Project $project
+     * @param $data
+     * @return Project
+     */
+    public function createIssueStateForProject(Project $project, $data)
+    {
+        return $project->issue_states()->create($data);
     }
 
     /**
@@ -53,12 +63,13 @@ class ProjectRepository
     /**
      * @param Project $project
      * @param array $data
+     * @param array $with
      * @return Project
      */
-    public function updateProject(Project $project, array $data)
+    public function updateProject(Project $project, array $data, array $with=[])
     {
         $project->update($data);
-        return $this->getProjectById($project->id);
+        return $this->getProjectById($project->id, $with);
     }
 
     /**
