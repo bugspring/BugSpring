@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Api\Project;
 
 use App\Models\Project;
+use App\Util\MaterialDesignIcons;
 use Illuminate\Foundation\Http\FormRequest;
 use Bouncer;
 /**
@@ -11,6 +12,7 @@ use Bouncer;
  *
  * @property string name
  * @property string description
+ * @property array issue_states
  */
 class StoreProjectRequest extends FormRequest
 {
@@ -33,7 +35,10 @@ class StoreProjectRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'description' => 'required|string'
+            'description' => 'required|string',
+            'issue_states' => 'sometimes|array',
+            'issue_states.*.title' => 'required|string|distinct',
+            'issue_states.*.icon'  => 'required|string',
         ];
     }
 }

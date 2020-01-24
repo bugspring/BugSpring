@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\IssueState;
 use Bouncer;
 use App\Models\Project;
 use App\Models\User;
@@ -23,7 +24,15 @@ class ProjectApiTest extends TestCase
         'name',
         'description',
         'created_at',
-        'updated_at'
+        'updated_at',
+
+        'issue_states' => [
+            '*' => [
+                'id',
+                'title',
+                'icon',
+            ],
+        ],
     ];
 
     /** @var User $user */
@@ -36,6 +45,155 @@ class ProjectApiTest extends TestCase
         Bouncer::allow($this->user)->everything();
     }
 
+    public function testCanStoreProjectWithIssueStates()
+    {
+        Passport::actingAs($this->user);
+
+        $projectData = [
+            'name' => "BugSpring",
+            'description' => "A modern Issue Tracker...",
+            'issue_states' => [
+                [
+                    'title' => "open",
+                    'icon' => "mdi-checkbox-multiple-blank-outline"
+                ],
+                [
+                    'title' => "in dev",
+                    'icon' => "mdi-progress-wrench"
+                ],
+                [
+                    'title' => "fixed",
+                    'icon' => "mdi-check-box-multiple-outline"
+                ],
+                [
+                    'title' => "won't fix",
+                    'icon' => "mdi-close-box-multiple"
+                ]
+            ],
+        ];
+
+        $this->json('POST', self::BASE_PATH, $projectData)
+            ->assertStatus(201)
+            ->assertJsonStructure(self::JSON_STRUCTURE)
+            ->assertJson($projectData);
+
+        $this->assertDatabaseHas('projects', [
+            'name' => $projectData['name'],
+            'description' => $projectData['description']
+        ]);
+        foreach($projectData['issue_states'] as $issue_state)
+        {
+            $this->assertDatabaseHas('issue_states', $issue_state);
+        }
+    }
+
+    public function testCanAddIssueStatesToProject()
+    {
+        Passport::actingAs($this->user);
+
+        $project = factory(Project::class)->create([
+            'owner_id' => $this->user
+        ]);
+
+        $issue_states = [
+            [
+                'title' => "open",
+                'icon' => "mdi-checkbox-multiple-blank-outline"
+            ],
+            [
+                'title' => "in dev",
+                'icon' => "mdi-progress-wrench"
+            ],
+            [
+                'title' => "fixed",
+                'icon' => "mdi-check-box-multiple-outline"
+            ],
+            [
+                'title' => "won't fix",
+                'icon' => "mdi-close-box-multiple"
+            ]
+        ];
+
+        $this->json('PUT', self::BASE_PATH . "/{$project->id}", ['issue_states' => $issue_states])
+            ->assertStatus(200)
+            ->assertJson(['issue_states' => $issue_states]);
+
+        foreach($issue_states as $issue_state)
+        {
+            $this->assertDatabaseHas('issue_states', $issue_state);
+        }
+
+    }
+
+    public function testCanUpdateIssueStatesFromProject()
+    {
+        Passport::actingAs($this->user);
+
+        $project = factory(Project::class)->create([
+            'owner_id' => $this->user
+        ]);
+        $issue_states = factory(IssueState::class, 4)->create([
+            'project_id' => $project->id
+        ]);
+
+        $issue_state_data = [
+            [
+                'id' => $issue_states[0]->id,
+                'title' => "open",
+                'icon' => "mdi-checkbox-multiple-blank-outline"
+            ],
+            [
+                'id' => $issue_states[1]->id,
+                'title' => "in dev",
+                'icon' => "mdi-progress-wrench"
+            ],
+            [
+                'id' => $issue_states[2]->id,
+                'title' => "fixed",
+                'icon' => "mdi-check-box-multiple-outline"
+            ],
+            [
+                'id' => $issue_states[3]->id
+            ]
+        ];
+
+        $this->json('PUT', self::BASE_PATH . "/{$project->id}", ['issue_states' => $issue_state_data])
+            ->assertStatus(200)
+            ->assertJson(['issue_states' => $issue_state_data]);
+
+        foreach($issue_state_data as $issue_state)
+        {
+            $this->assertDatabaseHas('issue_states', $issue_state);
+        }
+    }
+
+    public function testCanRemoveIssueStatesFromProject()
+    {
+        Passport::actingAs($this->user);
+
+        $project = factory(Project::class)->create([
+            'owner_id' => $this->user
+        ]);
+        $issue_states = factory(IssueState::class, 4)->create([
+            'project_id' => $project->id
+        ]);
+
+        $issue_state_data = [
+            ['id' => $issue_states[0]->id],
+            ['id' => $issue_states[2]->id],
+        ];
+
+//        dd($this->json('PUT', self::BASE_PATH . "/{$project->id}", ['issue_states' => $issue_states])->baseResponse->content());
+        $this->json('PUT', self::BASE_PATH . "/{$project->id}", ['issue_states' => $issue_state_data])
+            ->assertStatus(200)
+            ->assertJson(['issue_states' => $issue_state_data]);
+
+        foreach($issue_state_data as $issue_state)
+        {
+            $this->assertDatabaseHas('issue_states', $issue_state);
+        }
+    }
+
 
     public function testIndexReturnsAllOwnedAndLinkedProjects()
     {
@@ -43,12 +201,15 @@ class ProjectApiTest extends TestCase
         $otherUser = factory(User::class)->create();
 
         factory(Project::class, 50)->create([
-            'owner_id' => $this->user->id
-        ]);
+            'owner_id' => $this->user->id,
+        ])->each(function (Project $project)  {
+            $project->issue_states()->saveMany(factory(IssueState::class, 5)->make());
+        });
 
         factory(Project::class, 50)->create([
             'owner_id' => $otherUser->id
-        ])->each(function($project){
+        ])->each(function(Project $project){
+            $project->issue_states()->saveMany(factory(IssueState::class, 5)->make());
             $project->users()->save($this->user);
         });
 

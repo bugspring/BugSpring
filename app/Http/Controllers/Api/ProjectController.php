@@ -8,10 +8,13 @@ use App\Http\Requests\Api\Project\IndexProjectsRequest;
 use App\Http\Requests\Api\Project\ShowProjectRequest;
 use App\Http\Requests\Api\Project\StoreProjectRequest;
 use App\Http\Requests\Api\Project\UpdateProjectRequest;
+use App\Models\IssueState;
 use App\Models\Project;
 use App\Models\User;
+use App\Repositories\IssueStateRepository;
 use App\Repositories\ProjectRepository;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Bouncer;
 use Illuminate\Support\Facades\Log;
@@ -22,10 +25,16 @@ class ProjectController extends Controller
      * @var ProjectRepository
      */
     private $projectRepository;
+    /**
+     * @var IssueStateRepository
+     */
+    private $issueStateRepository;
 
-    public function __construct(ProjectRepository $projectRepository)
+    public function __construct(ProjectRepository $projectRepository,
+                                IssueStateRepository $issueStateRepository)
     {
         $this->projectRepository = $projectRepository;
+        $this->issueStateRepository = $issueStateRepository;
     }
 
     /**
@@ -38,19 +47,18 @@ class ProjectController extends Controller
     {
         /** @var User $user */
         $user = $request->user();
-//        dd($user->can('read',$user->ownProjects->first()));
 
         // get own projects
         $projects = $this->projectRepository->getProjectsOfUser($user->id);
+
         // add linked projects
         $projects = $projects->merge($this->projectRepository->getLinkedProjects($user->id));
+
         // remove all projects on which the user doesn't has read permission
         $projects = $projects->filter(function(Project $project) use ($user) {
-//            dd($user->can('read', $project));
-            $canRead = Bouncer::can('read', $project);
-            Log::debug("hasPermission: ".($canRead?'true':'false')." for " . $project );
-            return $canRead;
+            return Bouncer::can('read', $project);
         });
+
 
         return $projects;
     }
@@ -59,16 +67,26 @@ class ProjectController extends Controller
      * Store a newly created resource in storage.
      *
      * @param StoreProjectRequest $request
-     * @return Project
+     * @return JsonResponse
      */
     public function store(StoreProjectRequest $request)
     {
         $user = $request->user();
-        return $this->projectRepository->createProject([
+        $project = $this->projectRepository->createProject([
             'owner_id' => $user->id,
             'name' => $request->name,
             'description' => $request->description
         ]);
+
+        if($request->has('issue_states'))
+        {
+            foreach ($request->issue_states as $issue_state)
+            {
+                $this->projectRepository->createIssueStateForProject($project, $issue_state);
+            }
+        }
+
+        return response()->json($this->projectRepository->getProjectById($project->id), 201);
     }
 
     /**
@@ -104,7 +122,11 @@ class ProjectController extends Controller
             $updateData['description'] = $request->description;
         }
 
-        return $this->projectRepository->updateProject($project, $updateData);
+        if($request->has('issue_states')) {
+            $this->issueStateRepository->syncWithProject($project->id, $request->issue_states);
+        }
+
+        return $this->projectRepository->updateProject($project, $updateData, ['issue_states']);
     }
 
     /**
