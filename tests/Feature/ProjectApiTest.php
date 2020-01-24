@@ -127,12 +127,71 @@ class ProjectApiTest extends TestCase
 
     public function testCanUpdateIssueStatesFromProject()
     {
-        self::assertFalse(true);
+        Passport::actingAs($this->user);
+
+        $project = factory(Project::class)->create([
+            'owner_id' => $this->user
+        ]);
+        $issue_states = factory(IssueState::class, 4)->create([
+            'project_id' => $project->id
+        ]);
+
+        $issue_state_data = [
+            [
+                'id' => $issue_states[0]->id,
+                'title' => "open",
+                'icon' => "mdi-checkbox-multiple-blank-outline"
+            ],
+            [
+                'id' => $issue_states[1]->id,
+                'title' => "in dev",
+                'icon' => "mdi-progress-wrench"
+            ],
+            [
+                'id' => $issue_states[2]->id,
+                'title' => "fixed",
+                'icon' => "mdi-check-box-multiple-outline"
+            ],
+            [
+                'id' => $issue_states[3]->id
+            ]
+        ];
+
+        $this->json('PUT', self::BASE_PATH . "/{$project->id}", ['issue_states' => $issue_state_data])
+            ->assertStatus(200)
+            ->assertJson(['issue_states' => $issue_state_data]);
+
+        foreach($issue_state_data as $issue_state)
+        {
+            $this->assertDatabaseHas('issue_states', $issue_state);
+        }
     }
 
     public function testCanRemoveIssueStatesFromProject()
     {
-        self::assertFalse(true);
+        Passport::actingAs($this->user);
+
+        $project = factory(Project::class)->create([
+            'owner_id' => $this->user
+        ]);
+        $issue_states = factory(IssueState::class, 4)->create([
+            'project_id' => $project->id
+        ]);
+
+        $issue_state_data = [
+            ['id' => $issue_states[0]->id],
+            ['id' => $issue_states[2]->id],
+        ];
+
+//        dd($this->json('PUT', self::BASE_PATH . "/{$project->id}", ['issue_states' => $issue_states])->baseResponse->content());
+        $this->json('PUT', self::BASE_PATH . "/{$project->id}", ['issue_states' => $issue_state_data])
+            ->assertStatus(200)
+            ->assertJson(['issue_states' => $issue_state_data]);
+
+        foreach($issue_state_data as $issue_state)
+        {
+            $this->assertDatabaseHas('issue_states', $issue_state);
+        }
     }
 
 

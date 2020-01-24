@@ -63,6 +63,7 @@ class ProjectRepository
     /**
      * @param Project $project
      * @param array $data
+     * @param array $with
      * @return Project
      */
     public function updateProject(Project $project, array $data, array $with=[])

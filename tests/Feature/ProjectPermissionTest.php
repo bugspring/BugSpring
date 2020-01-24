@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\IssueState;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -26,19 +27,150 @@ class ProjectPermissionTest extends TestCase
         $this->user = factory(User::class)->create();
     }
 
-    public function testCanAddIssueStatesToProjectsWithModifyPermission()
+    public function testStoreIssueStatesWithProjectNeedsCreatePermission()
     {
-        $this->assertFalse(true);
+        Passport::actingAs($this->user);
+
+        $projectData = [
+            'name' => "BugSpring",
+            'description' => "A modern Issue Tracker...",
+            'issue_states' => [
+                [
+                    'title' => "open",
+                    'icon' => "mdi-checkbox-multiple-blank-outline"
+                ],
+                [
+                    'title' => "in dev",
+                    'icon' => "mdi-progress-wrench"
+                ],
+                [
+                    'title' => "fixed",
+                    'icon' => "mdi-check-box-multiple-outline"
+                ],
+                [
+                    'title' => "won't fix",
+                    'icon' => "mdi-close-box-multiple"
+                ]
+            ],
+        ];
+
+        $this->json('POST', self::BASE_PATH, $projectData)
+            ->assertStatus(201)
+            ->assertJson($projectData);
+
+        Bouncer::forbid($this->user)->to('create project');
+        Bouncer::refresh();
+
+        $this->json('POST', self::BASE_PATH, $projectData)
+            ->assertStatus(403);
     }
 
-    public function testCanUpdateIssueStatesFromProjectsWithModifyPermission()
+    public function testAddIssueStatesToProjectsNeedsUpdatePermission()
     {
-        $this->assertFalse(true);
+        Passport::actingAs($this->user);
+
+        $project = factory(Project::class)->create([
+            'owner_id' => $this->user->id,
+        ]);
+
+        $updateData = [
+            'issue_states' => [
+                [
+                    'title' => "open",
+                    'icon' => "mdi-checkbox-multiple-blank-outline"
+                ],
+                [
+                    'title' => "in dev",
+                    'icon' => "mdi-progress-wrench"
+                ],
+                [
+                    'title' => "fixed",
+                    'icon' => "mdi-check-box-multiple-outline"
+                ],
+                [
+                    'title' => "won't fix",
+                    'icon' => "mdi-close-box-multiple"
+                ]
+            ]
+        ];
+
+        $this->json('PUT', self::BASE_PATH . "/{$project->id}", $updateData)
+            ->assertStatus(200)
+            ->assertJson($updateData);
+
+        Bouncer::forbid($this->user)->to('update', $project);
+        Bouncer::refresh();
+
+        $this->json('PUT', self::BASE_PATH . "/{$project->id}", $updateData)
+            ->assertStatus(403);
     }
 
-    public function testCanRemoveIssueStatesFromProjectsWithModifyPermission()
+    public function testUpdateIssueStatesInProjectsNeedsUpdatePermission()
     {
-        $this->assertFalse(true);
+        Passport::actingAs($this->user);
+
+        $project = factory(Project::class)->create([
+            'owner_id' => $this->user->id,
+        ]);
+        $issue_states = factory(IssueState::class, 4)->create([
+            'project_id' => $project->id
+        ]);
+
+        $updateData = [
+            'issue_states' => [
+                ['id' => $issue_states[0]->id],
+                [
+                    'id' => $issue_states[1]->id,
+                    'title' => "in dev",
+                    'icon' => "mdi-progress-wrench"
+                ],
+                [
+                    'id' => $issue_states[2]->id,
+                    'title' => "fixed",
+                    'icon' => "mdi-check-box-multiple-outline"
+                ],
+                ['id' => $issue_states[3]->id]
+            ]
+        ];
+
+        $this->json('PUT', self::BASE_PATH . "/{$project->id}", $updateData)
+            ->assertStatus(200)
+            ->assertJson($updateData);
+
+        Bouncer::forbid($this->user)->to('update', $project);
+        Bouncer::refresh();
+
+        $this->json('PUT', self::BASE_PATH . "/{$project->id}", $updateData)
+            ->assertStatus(403);
+    }
+
+    public function testRemoveIssueStatesFromProjectsNeedsUpdatePermission()
+    {
+        Passport::actingAs($this->user);
+
+        $project = factory(Project::class)->create([
+            'owner_id' => $this->user->id,
+        ]);
+        $issue_states = factory(IssueState::class, 4)->create([
+            'project_id' => $project->id
+        ]);
+
+        $updateData = [
+            'issue_states' => [
+                ['id' => $issue_states[0]->id],
+                ['id' => $issue_states[2]->id],
+            ]
+        ];
+
+        $this->json('PUT', self::BASE_PATH . "/{$project->id}", $updateData)
+            ->assertStatus(200)
+            ->assertJson($updateData);
+
+        Bouncer::forbid($this->user)->to('update', $project);
+        Bouncer::refresh();
+
+        $this->json('PUT', self::BASE_PATH . "/{$project->id}", $updateData)
+            ->assertStatus(403);
     }
 
     public function testIndexOnlyListsProjectsWithReadPermission()

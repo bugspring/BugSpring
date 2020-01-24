@@ -37,8 +37,9 @@ class UpdateProjectRequest extends FormRequest
             'name' => 'sometimes|string',
             'description' => 'sometimes|string',
             'issue_states' => 'sometimes|array',
-            'issue_states.*.title' => 'required|string|distinct',
-            'issue_states.*.icon'  => 'required|string',
+            'issue_states.*.id' => 'sometimes|int|exists:issue_states,id',
+            'issue_states.*.title' => 'sometimes|string|distinct',
+            'issue_states.*.icon'  => 'sometimes|string',
         ];
     }
 }
