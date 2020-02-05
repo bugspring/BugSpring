@@ -13,6 +13,7 @@ use Illuminate\Foundation\Http\FormRequest;
  *
  * @property Project project
  * @property string name
+ * @property int issue_state_id
  */
 class StoreIssueRequest extends FormRequest
 {
@@ -34,7 +35,8 @@ class StoreIssueRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string'
+            'name' => 'required|string',
+            'issue_state_id' => 'required|int|exists:issue_states,id'
         ];
     }
 }

@@ -12,6 +12,8 @@ use Illuminate\Foundation\Http\FormRequest;
  *
  * @property Issue issue
  * @property Project project
+ * @property string name
+ * @property int issue_state_id
  */
 class UpdateIssueRequest extends FormRequest
 {
@@ -33,7 +35,8 @@ class UpdateIssueRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name' => 'sometimes|string',
+            'issue_state_id' => 'sometimes|int|exists:issue_states,id'
         ];
     }
 }

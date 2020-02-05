@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int id
  * @property string title
  * @property string icon
+ * @property int project_id
  *
  * @property Project project
  */

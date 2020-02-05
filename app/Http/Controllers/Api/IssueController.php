@@ -39,8 +39,7 @@ class IssueController extends Controller
     {
         $user = $request->user();
         return $this->issueRepository->getIssuesByProjectId($project->id)
-            ->filter(function(Issue $issue) use ($user)
-            {
+            ->filter(function (Issue $issue) use ($user) {
                 return $user->can('read', $issue);
             });
     }
@@ -56,7 +55,8 @@ class IssueController extends Controller
     {
         return $this->issueRepository->createIssue([
             'name' => $request->name,
-            'project_id' => $project->id
+            'project_id' => $project->id,
+            'issue_state_id' => $request->issue_state_id
         ]);
     }
 
@@ -69,8 +69,7 @@ class IssueController extends Controller
      */
     public function show(ShowIssueRequest $request, Project $project, Issue $issue)
     {
-        if($project->id != $issue->project_id)
-        {
+        if ($project->id != $issue->project_id) {
             throw new ApiException("Issue id not found in project", 404);
         }
         return $this->issueRepository->getIssueById($issue->id);
@@ -86,14 +85,20 @@ class IssueController extends Controller
      */
     public function update(UpdateIssueRequest $request, Project $project, Issue $issue)
     {
-        if($project->id != $issue->project_id)
-        {
-            throw new ApiException("Issue id not found in project", 404);
+        if ($project->id != $issue->project_id) {
+            throw new ApiException("Issue not found in project", 404);
         }
 
-        return $this->issueRepository->updateIssue($issue, [
-            'name' => $request->name
-        ]);
+        $data = [];
+
+        if ($request->has('name')) {
+            $data['name'] = $request->name;
+        }
+        if ($request->has('issue_state_id')) {
+            $data['issue_state_id'] = $request->issue_state_id;
+        }
+
+        return $this->issueRepository->updateIssue($issue, $data);
     }
 
     /**
@@ -103,10 +108,9 @@ class IssueController extends Controller
      * @param Issue $issue
      * @return Issue
      */
-    public function destroy(DestroyIssueRequest $request,Project $project, Issue $issue)
+    public function destroy(DestroyIssueRequest $request, Project $project, Issue $issue)
     {
-        if($project->id != $issue->project_id)
-        {
+        if ($project->id != $issue->project_id) {
             throw new ApiException("Issue id not found in project", 404);
         }
 

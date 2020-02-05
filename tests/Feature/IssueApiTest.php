@@ -21,6 +21,7 @@ class IssueApiTest extends TestCase
     const JSON_STRUCTURE = [
         'id',
         'name',
+        'issue_state',
         'project_id',
         'created_at',
         'updated_at'
