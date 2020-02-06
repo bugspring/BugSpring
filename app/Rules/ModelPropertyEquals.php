@@ -33,10 +33,11 @@ class ModelPropertyEquals implements Rule
     {
         $modelClass = $this->model;
         $model = $modelClass::find($value);
+
         if($model === null)
             return false;
 
-        return $model->{$this->property} === $this->value;
+        return $model->{$this->property} == $this->value;
     }
 
     /**
@@ -46,6 +47,6 @@ class ModelPropertyEquals implements Rule
      */
     public function message()
     {
-        return 'The validation error message.';
+        return "This {$this->model} doesn't have {$this->property} with {$this->value}";
     }
 }
