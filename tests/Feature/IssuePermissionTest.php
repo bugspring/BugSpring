@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\IssueState;
 use Bouncer;
 use App\Models\Issue;
 use App\Models\Project;
@@ -63,8 +64,10 @@ class IssuePermissionTest extends TestCase
 
         $this->user->allow('create issue', $this->project);
 
+
         $this->json('POST', $this->basePath,[
-            'name' => 'Lorem Iprum'
+            'name' => 'Lorem Iprum',
+            'issue_state_id' => factory(IssueState::class)->create(['project_id' => $this->project->id])->id
         ])->assertStatus(201);
 
         $this->user->forbid('create issue', $this->project);

@@ -13,7 +13,10 @@ use App\Http\Requests\DestroyIssueRequest;
 use App\Models\Issue;
 use App\Models\Project;
 use App\Repositories\IssueRepository;
+use http\Env\Response;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+use mysql_xdevapi\Collection;
 
 class IssueController extends Controller
 {
@@ -33,14 +36,13 @@ class IssueController extends Controller
      * @param IndexIssueRequest $request
      * @param Project $project
      * @param Issue $issue
-     * @return Issue[]
+     * @return \Illuminate\Support\Collection
      */
     public function index(IndexIssueRequest $request, Project $project)
     {
         $user = $request->user();
         return $this->issueRepository->getIssuesByProjectId($project->id)
-            ->filter(function(Issue $issue) use ($user)
-            {
+            ->filter(function (Issue $issue) use ($user) {
                 return $user->can('read', $issue);
             });
     }
@@ -50,14 +52,16 @@ class IssueController extends Controller
      *
      * @param StoreIssueRequest $request
      * @param Project $project
-     * @return Issue
+     * @return JsonResource
      */
     public function store(StoreIssueRequest $request, Project $project)
     {
-        return $this->issueRepository->createIssue([
+        $issue = $this->issueRepository->createIssue([
             'name' => $request->name,
-            'project_id' => $project->id
+            'project_id' => $project->id,
+            'issue_state_id' => $request->issue_state_id
         ]);
+        return response()->json($this->issueRepository->getIssueById($issue->id), 201);
     }
 
     /**
@@ -69,8 +73,7 @@ class IssueController extends Controller
      */
     public function show(ShowIssueRequest $request, Project $project, Issue $issue)
     {
-        if($project->id != $issue->project_id)
-        {
+        if ($project->id != $issue->project_id) {
             throw new ApiException("Issue id not found in project", 404);
         }
         return $this->issueRepository->getIssueById($issue->id);
@@ -86,14 +89,20 @@ class IssueController extends Controller
      */
     public function update(UpdateIssueRequest $request, Project $project, Issue $issue)
     {
-        if($project->id != $issue->project_id)
-        {
-            throw new ApiException("Issue id not found in project", 404);
+        if ($project->id != $issue->project_id) {
+            throw new ApiException("Issue not found in project", 404);
         }
 
-        return $this->issueRepository->updateIssue($issue, [
-            'name' => $request->name
-        ]);
+        $data = [];
+
+        if ($request->has('name')) {
+            $data['name'] = $request->name;
+        }
+        if ($request->has('issue_state_id')) {
+            $data['issue_state_id'] = $request->issue_state_id;
+        }
+
+        return $this->issueRepository->updateIssue($issue, $data);
     }
 
     /**
@@ -103,10 +112,9 @@ class IssueController extends Controller
      * @param Issue $issue
      * @return Issue
      */
-    public function destroy(DestroyIssueRequest $request,Project $project, Issue $issue)
+    public function destroy(DestroyIssueRequest $request, Project $project, Issue $issue)
     {
-        if($project->id != $issue->project_id)
-        {
+        if ($project->id != $issue->project_id) {
             throw new ApiException("Issue id not found in project", 404);
         }
 
