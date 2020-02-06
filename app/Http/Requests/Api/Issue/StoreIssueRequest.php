@@ -3,8 +3,12 @@
 namespace App\Http\Requests\Api\Issue;
 
 use App\Models\Issue;
+use App\Models\IssueState;
 use App\Models\Project;
 use App\Models\User;
+use App\Rules\Issue\HasReferenceToProject;
+use App\Rules\IssueHasReferenceToProject;
+use App\Rules\ModelPropertyEquals;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
@@ -36,7 +40,13 @@ class StoreIssueRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'issue_state_id' => 'required|int|exists:issue_states,id'
+            'issue_state_id' => [
+                'bail',
+                'required',
+                'int',
+                'exists:issue_states,id',
+                new ModelPropertyEquals(IssueState::class, 'project_id', $this->project->id),
+            ]
         ];
     }
 }

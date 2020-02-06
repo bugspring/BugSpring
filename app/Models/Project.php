@@ -19,7 +19,11 @@ use Illuminate\Support\Facades\Date;
  */
 class Project extends Model
 {
-    protected $guarded = [];
+    protected $fillable = [
+        'owner_id',
+        'name',
+        'description'
+    ];
     protected $with = ['issue_states'];
     protected $hidden = ['pivot'];
 

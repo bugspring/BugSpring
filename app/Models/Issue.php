@@ -23,6 +23,8 @@ class Issue extends Model
         'project_id',
         'issue_state_id'
     ];
+    protected $with = ['issue_state'];
+    protected $hidden = ['issue_state_id'];
 
     public function project()
     {

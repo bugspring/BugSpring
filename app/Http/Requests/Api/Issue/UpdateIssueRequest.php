@@ -3,7 +3,9 @@
 namespace App\Http\Requests\Api\Issue;
 
 use App\Models\Issue;
+use App\Models\IssueState;
 use App\Models\Project;
+use App\Rules\ModelPropertyEquals;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
@@ -36,7 +38,12 @@ class UpdateIssueRequest extends FormRequest
     {
         return [
             'name' => 'sometimes|string',
-            'issue_state_id' => 'sometimes|int|exists:issue_states,id'
+            'issue_state_id' => [
+                'sometimes',
+                'int',
+                'exists:issue_states,id',
+                new ModelPropertyEquals(IssueState::class, 'project_id', $this->project->id)
+            ]
         ];
     }
 }

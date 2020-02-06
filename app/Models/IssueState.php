@@ -29,6 +29,10 @@ class IssueState extends Model
         return $this->belongsTo(Project::class);
     }
 
+    public function issues() {
+        return $this->hasMany(Issue::class);
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
