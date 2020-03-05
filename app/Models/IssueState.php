@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int id
  * @property string title
  * @property string icon
+ * @property int project_id
  *
  * @property Project project
  */
@@ -26,6 +27,10 @@ class IssueState extends Model
 
     public function project() {
         return $this->belongsTo(Project::class);
+    }
+
+    public function issues() {
+        return $this->hasMany(Issue::class);
     }
 
     /**

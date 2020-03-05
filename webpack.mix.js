@@ -18,10 +18,7 @@ mix.options({
     }
 });
 
-
-//mix.setPublicPath('public');
-//mix.setResourceRoot('../');
-mix.js('resources/js/app.js', 'public/js')
-   .sass('resources/sass/app.scss', 'public/css')
-    .copyDirectory('node_modules/@mdi/font/fonts', 'public/fonts/vendor/@mdi')
-   .sourceMaps();
+mix .js('resources/js/app.js', 'public/js')
+    .js('resources/js/bootstrap.js', 'public/js')
+    .sass('resources/sass/app.scss', 'public/css')
+    .sourceMaps();

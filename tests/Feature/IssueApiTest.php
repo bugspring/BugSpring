@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\IssueState;
 use Bouncer;
 use App\Models\Issue;
 use App\Models\Project;
@@ -21,6 +22,7 @@ class IssueApiTest extends TestCase
     const JSON_STRUCTURE = [
         'id',
         'name',
+        'issue_state',
         'project_id',
         'created_at',
         'updated_at'
@@ -76,12 +78,16 @@ class IssueApiTest extends TestCase
 
         $issueData = [
             'name' => 'Submitting a form drops the database...',
+            'issue_state_id' => factory(IssueState::class)->create(['project_id' => $this->project->id])->id
         ];
 
         $this->json('POST', $this->basePath, $issueData)
             ->assertStatus(201)
             ->assertJsonStructure(self::JSON_STRUCTURE)
-            ->assertJson($issueData);
+            ->assertJson([
+                'name' => $issueData['name'],
+                'issue_state' => IssueState::find($issueData['issue_state_id'])->toArray()
+            ]);
 
         $this->assertDatabaseHas('issues', $issueData);
     }
@@ -90,7 +96,56 @@ class IssueApiTest extends TestCase
     {
         Passport::actingAs($this->user);
 
-        $this->json('POST', $this->basePath, [])
+        $issueData = [
+            'issue_state_id' => factory(IssueState::class)->create(['project_id' => $this->project->id])->id
+        ];
+
+        $this->json('POST', $this->basePath, $issueData)
+            ->assertStatus(422);
+    }
+
+    public function testStoreNeedsIssueStateIdProperty()
+    {
+        Passport::actingAs($this->user);
+
+        $issueData = [
+            'name' => 'Submitting a form drops the database...',
+        ];
+
+        $this->json('POST', $this->basePath, $issueData)
+            ->assertStatus(422);
+    }
+
+    public function testStoreIssueStateIdMustExistInDatabase()
+    {
+        Passport::actingAs($this->user);
+
+        $issueStateId = 1;
+        while (IssueState::whereId($issueStateId)->exists()) {
+            $issueStateId += 1;
+        }
+
+        $issueData = [
+            'name' => 'Creating an issue make users want to cry',
+            'issue_state_id' => $issueStateId,
+        ];
+
+        $this->json('POST', $this->basePath, $issueData)
+            ->assertStatus(422);
+    }
+
+    public function testStoreIssueStateMustExistInSameProjectAsIssue()
+    {
+        Passport::actingAs($this->user);
+
+        $unattachedProject = factory(Project::class)->create();
+
+        $issueData = [
+            'name' => 'Issues can have states from unattached projects',
+            'issue_state_id' => factory(IssueState::class)->create(['project_id' => $unattachedProject->id])->id
+        ];
+
+        $this->json('POST', $this->basePath, $issueData)
             ->assertStatus(422);
     }
 
@@ -131,13 +186,17 @@ class IssueApiTest extends TestCase
         ]);
 
         $updateData = [
-            'name' => 'Dropping databases makes users mad...'
+            'name' => 'Dropping databases makes users mad...',
+            'issue_state_id' => factory(IssueState::class)->create(['project_id' => $this->project->id])->id
         ];
 
         $this->json('PUT', $this->basePath . "/{$issue->id}", $updateData)
             ->assertStatus(200)
             ->assertJsonStructure(self::JSON_STRUCTURE)
-            ->assertJson($updateData);
+            ->assertJson([
+                'name' => $updateData['name'],
+                'issue_state' => IssueState::find($updateData['issue_state_id'])->toArray()
+            ]);
 
         $this->assertDatabaseHas('issues', $updateData);
     }
@@ -158,6 +217,48 @@ class IssueApiTest extends TestCase
 
         $this->json('PUT', $this->basePath . "/{$issue->id}", $updateData)
             ->assertStatus(404);
+    }
+
+    public function testUpdateIssueStateIdMustExistInDatabase()
+    {
+        Passport::actingAs($this->user);
+
+        $issue = factory(Issue::class)->create([
+            'project_id' => (factory(Project::class)->create([
+                'owner_id' => (factory(User::class)->create())->id
+            ]))->id
+        ]);
+
+        $issueStateId = 1;
+        while (IssueState::whereId($issueStateId)->exists()) {
+            $issueStateId += 1;
+        }
+
+        $issueData = [
+            'issue_state_id' => $issueStateId,
+        ];
+
+        $this->json('PUT', $this->basePath . "/{$issue->id}", $issueData)
+            ->assertStatus(422);
+    }
+
+    public function testUpdateIssueStateMustExistInSameProjectAsIssue()
+    {
+        Passport::actingAs($this->user);
+
+        $unattachedProject = factory(Project::class)->create();
+
+        $issue = factory(Issue::class)->create([
+            'project_id' => $this->project->id
+        ]);
+
+        $issueData = [
+            'name' => 'Issues can have states from unattached projects',
+            'issue_state_id' => factory(IssueState::class)->create(['project_id' => $unattachedProject->id])->id
+        ];
+
+        $this->json('PUT', $this->basePath . "/{$issue->id}", $issueData)
+            ->assertStatus(422);
     }
 
     public function testDestroyDeletesTheIssueInTheDatabase()
