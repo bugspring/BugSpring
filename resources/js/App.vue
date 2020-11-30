@@ -56,9 +56,9 @@
             </v-row>
         </v-app-bar>
 
-        <v-content class="fill-height">
+        <v-main class="fill-height">
             <router-view></router-view>
-        </v-content>
+        </v-main>
 
     </v-app>
 </template>
