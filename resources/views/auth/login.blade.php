@@ -36,7 +36,7 @@
                                         <strong>{{ $message }}</strong>
                                     </span>
                                 @enderror
-                            </div>
+                            </div>logout
                         </div>
 
                         <div class="form-group row">

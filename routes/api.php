@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,6 +23,7 @@ Route::group(['namespace' => 'Api'], function()
 
     Route::group(['middleware' => 'auth:api'], function()
     {
+
         Route::post('/user/details', 'UserController@details');
         Route::apiResource('/project/{project}/issue', 'IssueController');
         Route::apiResource('/project', 'ProjectController');
