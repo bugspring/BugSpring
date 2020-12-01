@@ -56,7 +56,7 @@
             </v-row>
         </v-app-bar>
 
-        <v-main class="fill-height">
+        <v-main class="fill-height grey lighten-4">
             <router-view></router-view>
         </v-main>
 

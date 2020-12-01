@@ -1,47 +1,35 @@
 <template>
     <v-container>
-        <v-row>
-            <v-col><span class="title">{{ $tc('project.label', 2) }}</span></v-col>
-            <v-col class="text-right">
-                <v-btn color="primary">{{$t('project.add')}}</v-btn>
-            </v-col>
-        </v-row>
-        <v-divider class="ma-0"></v-divider>
-        <v-row>
-            <v-col>
-                <v-tabs background-color="transparent">
-                    <v-tab :to="{name: 'Projects', params: {filter: 'own'}}">{{ $t('project.own')}}</v-tab>
-                    <v-tab :to="{name: 'Projects', params: {filter: 'starred'}}">{{ $t('project.starred')}}</v-tab>
-                    <v-tab :to="{name: 'Projects', params: {filter: 'browse'}}">{{ $t('project.browse')}}</v-tab>
-                </v-tabs>
-                <v-divider></v-divider>
-            </v-col>
-        </v-row>
+        <v-card>
+            <v-card-text>
+                <v-row class="mb-6">
+                    <v-col>
+                        <span class="text-h4">{{ $tc('project.label', 2) }}</span>
+                    </v-col>
+                    <v-col class="text-right">
+                        <v-btn color="primary">{{$t('project.add')}}</v-btn>
+                    </v-col>
+                </v-row>
 
-        <v-row>
-            <v-col>
-                <v-list color="transparent">
-                    <v-list-item v-for="(project, index) in filteredProjects" :key="index"
-                                 @click="showProject(project.id)">
+                <v-divider class="ma-0"></v-divider>
+                <v-row>
+                    <v-col class="py-0">
+                        <v-tabs background-color="transparent">
+                            <v-tab :to="{name: 'Projects', params: {filter: 'own'}}">{{ $t('project.own')}}</v-tab>
+                            <v-tab :to="{name: 'Projects', params: {filter: 'starred'}}">{{ $t('project.starred')}}</v-tab>
+                            <v-tab :to="{name: 'Projects', params: {filter: 'browse'}}">{{ $t('project.browse')}}</v-tab>
+                        </v-tabs>
+                        <v-divider></v-divider>
+                    </v-col>
+                </v-row>
 
-                        <list-item-char-avatar :text="project.name"></list-item-char-avatar>
-
-                        <v-list-item-content>
-                            {{ project.name }}
-                        </v-list-item-content>
-
-                        <v-row class="justify-center">
-                            <IssueStateOverview :issue-states="project.issue_states"></IssueStateOverview>
-                        </v-row>
-                        <v-list-item-action>
-                            <v-btn icon @click.stop="toggleIsFavorite(project)">
-                                <v-icon>{{project.is_favorite?'mdi-star':'mdi-star-outline'}}</v-icon>
-                            </v-btn>
-                        </v-list-item-action>
-                    </v-list-item>
-                </v-list>
-            </v-col>
-        </v-row>
+                <v-row>
+                    <v-col class="py-0">
+                        <projects-list :projects="filteredProjects" @select="showProject($event.id)"></projects-list>
+                    </v-col>
+                </v-row>
+            </v-card-text>
+        </v-card>
     </v-container>
 </template>
 
@@ -52,10 +40,12 @@
     import Dashboard from "./Dashboard";
     import Breadcrumbs from "../components/Breadcrumbs";
     import IssueStateOverview from "../components/projects/IssueStateOverview";
+    import ProjectsListItem from "../components/projects/ProjectsListItem";
+    import ProjectsList from "../components/projects/ProjectsList";
 
     export default {
         name: "Projects",
-        components: {IssueStateOverview, Breadcrumbs, ListItemCharAvatar},
+        components: {ProjectsList, ProjectsListItem, IssueStateOverview, Breadcrumbs, ListItemCharAvatar},
         computed: {
             ...mapState('project', {
                 ownProjects: state => state.projects,
