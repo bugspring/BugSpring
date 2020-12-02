@@ -23,25 +23,25 @@
 </template>
 
 <script>
-import ListItemCharAvatar from "../components/ListItemCharAvatar";
+import ListItemCharAvatar from "../../components/ListItemCharAvatar";
 import {mapActions, mapState} from "vuex";
-import Loading from "../components/Loading";
+import Loading from "../../components/Loading";
 
 export default {
     name: "Project",
     components: {Loading, ListItemCharAvatar},
     computed: {
-        ...mapState('project', {
-            project: 'current'
-        })
+        ...mapState('projects/projectCrud', [
+            'project'
+        ])
     },
     methods: {
-        ...mapActions('project', [
-            'loadCurrentProject',
+        ...mapActions('projects/projectCrud', [
+            'loadProject',
         ])
     },
     mounted() {
-        this.loadCurrentProject(this.$route.params.id);
+        this.loadProject(this.$route.params.id);
     }
 }
 </script>

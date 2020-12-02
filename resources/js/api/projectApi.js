@@ -4,7 +4,6 @@ const BASE_URL = '/api/project';
 
 export default {
     index() {
-        console.log(axios)
         return axios.get(BASE_URL).then(result => result.data);
     },
 

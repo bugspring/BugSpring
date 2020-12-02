@@ -1,16 +1,16 @@
-import projectApi from "../api/projectApi";
-import props from "vuetify/lib/components/VCalendar/util/props";
+import projectApi from "../../api/projectApi";
+import projectCrud from "./projectCrud"
+import projectEditor from "./projectEditor";
 
 export default {
     namespaced: true,
     state: {
         isLoading: false,
-        current: null,
         projects: null,
     },
     getters: {
         favoredProjects(state) {
-            if(!state.projects) return [];
+            if (!state.projects) return [];
             return state.projects.filter(project => project.is_favorite);
         },
     },
@@ -23,32 +23,19 @@ export default {
         },
         setProject(state, project) {
             state.projects = state.projects.map(p => {
-                return project.id === p.id ? project: p;
+                return project.id === p.id ? project : p;
             });
         },
-        setCurrentProject(state, project) {
-            state.current = project;
-            state.projects = state.projects.map(p => {
-                if(p.id === project.id) return project;
-                return p;
+        removeProject(state, project) {
+            state.projects = state.projects.filter(p => {
+                return p.id !== project.id;
             });
-        }
+        },
     },
     actions: {
-
-        loadCurrentProject({ commit }, id) {
+        reloadProjects({commit}) {
             commit('setIsLoading', true);
-
-            return projectApi.show(id).then(project => {
-                commit('setCurrentProject', project);
-            }).finally(() => {
-                commit('setIsLoading', false);
-            });
-        },
-
-        reloadProjects({ commit }) {
-            commit('setIsLoading', true);
-            return projectApi.index().then( projects => {
+            return projectApi.index().then(projects => {
                 commit('setProjects', projects);
             }).finally(() => {
                 commit('setIsLoading', false);
@@ -65,5 +52,9 @@ export default {
                 commit('setIsLoading', false);
             });
         },
+    },
+    modules: {
+        projectCrud,
+        projectEditor
     }
 }
