@@ -6,6 +6,7 @@ use App\Models\Project;
 use App\Models\User;
 use App\Repositories\UserRepository;
 use Illuminate\Foundation\Http\FormRequest;
+use Bouncer;
 
 /**
  * Class ShowProjectRequest

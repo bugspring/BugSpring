@@ -3,14 +3,11 @@
 namespace Tests\Feature;
 
 use App\Models\IssueState;
-use Bouncer;
 use App\Models\Project;
 use App\Models\User;
+use Bouncer;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Passport\Passport;
-use Mockery\Generator\StringManipulation\Pass\Pass;
 use Tests\TestCase;
 
 class ProjectApiTest extends TestCase
@@ -194,6 +191,34 @@ class ProjectApiTest extends TestCase
         }
     }
 
+
+    public function testProjectCanBeFavored()
+    {
+        Passport::actingAs($this->user);
+
+        // create Project
+        $project = factory(Project::class)->create();
+        $projectData = $project->toArray();
+        $this->assertFalse($projectData['is_favorite']);
+
+        // make project favorite
+        $projectData['is_favorite'] = true;
+
+        $this->json('PUT', self::BASE_PATH . "/{$project->id}", $projectData)
+            ->assertStatus(200);
+
+        $this->json('GET', self::BASE_PATH . "/{$project->id}")
+            ->assertJson(['is_favorite'=>true]);
+
+        // make project no favorite
+        $projectData['is_favorite'] = false;
+
+        $this->json('PUT', self::BASE_PATH . "/{$project->id}", $projectData)
+            ->assertStatus(200);
+
+        $this->json('GET', self::BASE_PATH . "/{$project->id}")
+            ->assertJson(['is_favorite'=>false]);
+    }
 
     public function testIndexReturnsAllOwnedAndLinkedProjects()
     {

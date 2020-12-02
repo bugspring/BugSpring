@@ -3,10 +3,12 @@
 namespace App\Providers;
 
 use App\Models\Project;
-use Bouncer;
+
 use App\Models\User;
 use App\Observers\UserObserver;
 use Illuminate\Support\ServiceProvider;
+
+use Bouncer;
 
 class AppServiceProvider extends ServiceProvider
 {

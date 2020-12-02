@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -59,5 +60,10 @@ class User extends Authenticatable
     public function projects()
     {
         return $this->belongsToMany(Project::class);
+    }
+
+    public function favoredProjects()
+    {
+        return $this->belongsToMany(Project::class, 'favored_projects');
     }
 }

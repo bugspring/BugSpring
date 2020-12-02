@@ -6,6 +6,12 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'BugSpring') }}</title>
+
+    <script>
+        window.default_locale = "{{ config('app.locale') }}";
+        window.fallback_locale = "{{ config('app.fallback_locale') }}";
+    </script>
+
 </head>
 <body>
 <div id="app">

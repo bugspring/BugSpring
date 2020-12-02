@@ -11,6 +11,7 @@ use Illuminate\Foundation\Http\FormRequest;
  * @property string description
  * @property array issue_states
  *
+ * @property bool is_favorite
  * @property Project project
  */
 class UpdateProjectRequest extends FormRequest
@@ -40,6 +41,7 @@ class UpdateProjectRequest extends FormRequest
             'issue_states.*.id' => 'sometimes|int|exists:issue_states,id',
             'issue_states.*.title' => 'sometimes|string|distinct',
             'issue_states.*.icon'  => 'sometimes|string',
+            'is_favorite' => 'sometimes|boolean'
         ];
     }
 }

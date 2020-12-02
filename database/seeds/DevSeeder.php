@@ -19,6 +19,7 @@ class DevSeeder extends Seeder
             'password' => Hash::make('secret'),
         ]);
 
+
         $this->call(ProjectSeeder::class);
     }
 }

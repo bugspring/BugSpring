@@ -1,9 +1,13 @@
 window.Vue = require('vue');
 
 import 'vuetify/dist/vuetify.min.css'
-import '@mdi/font/css/materialdesignicons.css'
 
+import '@mdi/font/css/materialdesignicons.css'
 import Vue from 'vue'
+import VueI18n from 'vue-i18n'
+
+import en from '../lang/en/messages'
+
 import Vuetify from 'vuetify'
 
 import App from './App.vue'
@@ -53,6 +57,13 @@ Vue.use(Vuetify);
 const app = new Vue({
     router,
     store,
+    i18n: new VueI18n({
+        locale: 'en',
+        messages: {
+            en: en,
+        }
+
+    }),
     vuetify: new Vuetify(),
     render: function(h) { return h(App);},
     el: '#app',

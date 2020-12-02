@@ -121,6 +121,9 @@ class ProjectController extends Controller
         if($request->has('description')) {
             $updateData['description'] = $request->description;
         }
+        if($request->has('is_favorite')) {
+            $updateData['is_favorite'] = $request->is_favorite;
+        }
 
         if($request->has('issue_states')) {
             $this->issueStateRepository->syncWithProject($project->id, $request->issue_states);
