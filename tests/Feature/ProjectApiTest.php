@@ -3,14 +3,11 @@
 namespace Tests\Feature;
 
 use App\Models\IssueState;
-use Bouncer;
 use App\Models\Project;
 use App\Models\User;
+use Bouncer;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Passport\Passport;
-use Mockery\Generator\StringManipulation\Pass\Pass;
 use Tests\TestCase;
 
 class ProjectApiTest extends TestCase

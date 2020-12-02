@@ -97,7 +97,7 @@ class ProjectRepository
      */
     public function updateProject(Project $project, array $data, array $with=[])
     {
-        $project->update($data);
+        $updated = $project->update($data);
         return $this->getProjectById($project->id, $with);
     }
 

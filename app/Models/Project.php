@@ -35,7 +35,8 @@ class Project extends Model
     protected $fillable = [
         'owner_id',
         'name',
-        'description'
+        'description',
+        'is_favorite'
     ];
     protected $with = ['issue_states'];
     protected $hidden = ['pivot'];
