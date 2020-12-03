@@ -9,7 +9,7 @@
                     <v-col cols="auto" align-self="center">
                         <span class="text-h4 text-center">{{ project.name }}</span>
                     </v-col>
-                    <v-spacer />
+                    <v-spacer/>
                     <v-col cols="auto">
                         <v-btn color="primary" @click="updateProject(project)">
                             {{ $t('project.edit') }}
@@ -18,7 +18,7 @@
                 </v-row>
 
 
-                <v-divider />
+                <v-divider/>
 
             </v-card-text>
         </v-card>
@@ -31,6 +31,7 @@
 import ListItemCharAvatar from "../../components/ListItemCharAvatar";
 import {mapActions, mapState} from "vuex";
 import Loading from "../../components/Loading";
+import ProjectList from "./ProjectList";
 
 export default {
     name: "Project",
@@ -49,11 +50,14 @@ export default {
         ])
     },
     mounted() {
-        this.loadProject(this.$route.params.id);
+        this.loadProject(this.$route.params.id)
+            .catch(error => {
+                this.$router.replace({name: ProjectList.name});
+            });
     },
     watch: {
         project(newProject, oldProject) {
-            if(newProject === null) {
+            if (newProject === null) {
                 this.$router.back();
             }
         }

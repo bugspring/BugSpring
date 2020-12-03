@@ -41,7 +41,7 @@
 <script>
 import {mapActions, mapGetters, mapState} from "vuex";
 import ListItemCharAvatar from "../../components/ListItemCharAvatar";
-import Project from "./ProjectView";
+import ProjectView from "./ProjectView";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import IssueStateOverview from "../../components/projects/IssueStateOverview";
 import ProjectsListItem from "../../components/projects/ProjectsListItem";
@@ -87,7 +87,7 @@ export default {
             'createProject'
         ]),
         showProject(id) {
-            this.$router.push({name: Project.name, params: {id}});
+            this.$router.push({name: ProjectView.name, params: {id}});
         },
     },
     mounted() {
