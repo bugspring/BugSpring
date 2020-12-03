@@ -6,7 +6,7 @@
                     <v-col>
                         <span class="text-h4">{{ $tc('project.label', 2) }}</span>
                     </v-col>
-                    <v-spacer />
+                    <v-spacer/>
                     <v-col cols="auto">
                         <v-btn color="primary" @click="createProject()">
                             {{ $t('project.add') }}
@@ -18,10 +18,10 @@
                 <v-row>
                     <v-col class="py-0">
                         <v-tabs background-color="transparent">
-                            <v-tab :to="{name: 'Projects', params: {filter: 'own'}}">{{ $t('project.own') }}</v-tab>
-                            <v-tab :to="{name: 'Projects', params: {filter: 'starred'}}">{{ $t('project.starred') }}
+                            <v-tab :to="{name: 'ProjectList', params: {filter: 'own'}}">{{ $t('project.own') }}</v-tab>
+                            <v-tab :to="{name: 'ProjectList', params: {filter: 'starred'}}">{{ $t('project.starred') }}
                             </v-tab>
-                            <v-tab :to="{name: 'Projects', params: {filter: 'browse'}}">{{ $t('project.browse') }}
+                            <v-tab :to="{name: 'ProjectList', params: {filter: 'browse'}}">{{ $t('project.browse') }}
                             </v-tab>
                         </v-tabs>
                         <v-divider></v-divider>
@@ -50,7 +50,7 @@ import ProjectEditor from "../../components/projects/ProjectEditor";
 import projectEditor from "../../util/dialogs/projectEditor";
 
 export default {
-    name: "Projects",
+    name: "ProjectList",
     components: {ProjectEditor, ProjectsList, ProjectsListItem, IssueStateOverview, Breadcrumbs, ListItemCharAvatar},
     data() {
         return {

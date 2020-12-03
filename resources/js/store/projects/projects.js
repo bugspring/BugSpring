@@ -52,20 +52,8 @@ export default {
                 commit('setIsLoading', false);
             });
         },
-
-        toggleIsFavorite({commit}, project) {
-            commit('setIsLoading', true);
-
-            project.is_favorite = !project.is_favorite;
-            return projectApi.update(project).then(project => {
-                commit('setProject', project);
-            }).finally(() => {
-                commit('setIsLoading', false);
-            });
-        },
     },
     modules: {
         projectCrud,
-        projectEditor
     }
 }

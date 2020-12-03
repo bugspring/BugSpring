@@ -31,6 +31,7 @@
 <script>
 import ListItemCharAvatar from "../ListItemCharAvatar";
 import IssueStateOverview from "./IssueStateOverview";
+import {mapActions} from "vuex";
 
 export default {
     name: "ProjectsListItem",
@@ -38,9 +39,14 @@ export default {
         'click',
     ],
     props: {
-        project:Object,
+        project: Object,
     },
-    components: {IssueStateOverview, ListItemCharAvatar}
+    components: {IssueStateOverview, ListItemCharAvatar},
+    methods: {
+        ...mapActions('projects/projectCrud', [
+            'toggleIsFavorite'
+        ])
+    }
 }
 </script>
 

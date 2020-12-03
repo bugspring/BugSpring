@@ -55,11 +55,11 @@ export default {
     mounted() {
         this.loadProject(this.$route.params.id)
             .catch(error => {
-                this.$router.replace({name: ProjectList.name});
+                this.$router.back();
             });
         EventBus.$on('project:deleted', project => {
             if(project.id === this.$route.params.id)
-                this.$router.replace({name: ProjectList.name})
+                this.$router.back();
         });
     },
 }

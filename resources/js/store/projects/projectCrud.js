@@ -57,6 +57,18 @@ export default {
                     commit('setIsLoading', false);
                 });
         },
+        toggleIsFavorite({commit}, project) {
+            commit('setIsLoading', true);
+
+            project.is_favorite = !project.is_favorite;
+            return projectApi.update(project).then(project => {
+                commit('setProject', project);
+                commit('projects/setProject', project, {root: true});
+                return project;
+            }).finally(() => {
+                commit('setIsLoading', false);
+            });
+        },
         deleteProject({commit}, project) {
             commit('setIsLoading', true);
 
@@ -69,7 +81,9 @@ export default {
                 .finally(() => {
                     commit('setIsLoading', false);
                 });
-        }
+        },
+
+
     },
     modules: {}
 }
