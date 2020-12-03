@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import axios from 'axios'
-import notification from "./notification"
+import notification from "./dialogs/notification"
 import translate from "./translate";
 
 

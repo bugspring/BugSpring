@@ -47,6 +47,7 @@ import IssueStateOverview from "../../components/projects/IssueStateOverview";
 import ProjectsListItem from "../../components/projects/ProjectsListItem";
 import ProjectsList from "../../components/projects/ProjectsList";
 import ProjectEditor from "../../components/projects/ProjectEditor";
+import projectEditor from "../../util/dialogs/projectEditor";
 
 export default {
     name: "Projects",
@@ -83,9 +84,9 @@ export default {
             'reloadProjects',
             'toggleIsFavorite',
         ]),
-        ...mapActions('projects/projectEditor', [
-            'createProject'
-        ]),
+        createProject() {
+            projectEditor.createProject();
+        },
         showProject(id) {
             this.$router.push({name: ProjectView.name, params: {id}});
         },

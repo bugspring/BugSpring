@@ -17,7 +17,7 @@ import config from "./config";
 
 
 // noinspection ES6UnusedImports
-import httpClient from './util/httpClient'
+import httpClient from './util/http-client'
 
 /**
  * The following block of code may be used to automatically register your

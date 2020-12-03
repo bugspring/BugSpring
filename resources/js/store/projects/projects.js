@@ -24,9 +24,18 @@ export default {
         setProject(state, project) {
             if (state.projects === null)
                 return;
+            let projectFound = false;
             state.projects = state.projects.map(p => {
-                return project.id === p.id ? project : p;
+                if(project.id === p.id)
+                {
+                    projectFound = true;
+                    return project;
+                }
+                return p;
             });
+            if(!projectFound) {
+                state.projects.push(project);
+            }
         },
         removeProject(state, project) {
             state.projects = state.projects.filter(p => {

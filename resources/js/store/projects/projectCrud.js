@@ -24,6 +24,7 @@ export default {
                 .then(project => {
                     commit('setProject', project);
                     commit('projects/setProject', project, {root: true});
+                    return project;
                 })
                 .finally(() => {
                     commit('setIsLoading', false)
@@ -37,6 +38,7 @@ export default {
                 .then(project => {
                     commit('setProject', project);
                     commit('projects/setProject', project, {root: true});
+                    return project;
                 })
                 .finally(() => {
                     commit('setIsLoading', false);
@@ -49,6 +51,7 @@ export default {
                 .then(project => {
                     commit('setProject', project);
                     commit('projects/setProject', project, {root: true});
+                    return project;
                 })
                 .finally(() => {
                     commit('setIsLoading', false);
@@ -61,6 +64,7 @@ export default {
                 .then(project => {
                     commit('setProject', null);
                     commit('projects/removeProject', project, {root: true});
+                    return project;
                 })
                 .finally(() => {
                     commit('setIsLoading', false);

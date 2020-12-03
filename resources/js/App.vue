@@ -60,12 +60,10 @@
         <v-main class="fill-height grey lighten-4">
             <router-view></router-view>
         </v-main>
-        <v-dialog v-model="isProjectEditorOpen"
-                  persistent
-                  max-width="800">
-            <project-editor></project-editor>
-        </v-dialog>
+
+        <project-editor />
         <notification-snakbar />
+
     </v-app>
 </template>
 
@@ -77,6 +75,7 @@ import Projects from "./views/projects/ProjectList";
 import {mapActions, mapState} from "vuex";
 import ProjectEditor from "./components/projects/ProjectEditor";
 import NotificationSnakbar from "./components/NotificationSnakbar";
+import projectEditor from "./util/dialogs/projectEditor";
 
 export default {
     name: "App.vue",
@@ -93,9 +92,9 @@ export default {
         })
     },
     methods: {
-        ...mapActions('projects/projectEditor', [
-            'createProject'
-        ]),
+        createProject() {
+            projectEditor.createProject();
+        },
         listProjects(filter) {
             this.$router.push({name: Projects.name, params: {filter}});
         }

@@ -11,7 +11,7 @@
                     </v-col>
                     <v-spacer/>
                     <v-col cols="auto">
-                        <v-btn color="primary" @click="updateProject(project)">
+                        <v-btn color="primary" @click="updateProject()">
                             {{ $t('project.edit') }}
                         </v-btn>
                     </v-col>
@@ -32,36 +32,36 @@ import ListItemCharAvatar from "../../components/ListItemCharAvatar";
 import {mapActions, mapState} from "vuex";
 import Loading from "../../components/Loading";
 import ProjectList from "./ProjectList";
+import projectEditor from "../../util/dialogs/projectEditor";
+import EventBus from "../../util/EventBus";
 
 export default {
     name: "Project",
     components: {Loading, ListItemCharAvatar},
     computed: {
         ...mapState('projects/projectCrud', [
-            'project'
+            'project',
+            'isLoading'
         ])
     },
     methods: {
         ...mapActions('projects/projectCrud', [
             'loadProject',
         ]),
-        ...mapActions('projects/projectEditor', [
-            'updateProject'
-        ])
+        updateProject() {
+            projectEditor.updateProject(this.project)
+        }
     },
     mounted() {
         this.loadProject(this.$route.params.id)
             .catch(error => {
                 this.$router.replace({name: ProjectList.name});
             });
+        EventBus.$on('project:deleted', project => {
+            if(project.id === this.$route.params.id)
+                this.$router.replace({name: ProjectList.name})
+        });
     },
-    watch: {
-        project(newProject, oldProject) {
-            if (newProject === null) {
-                this.$router.back();
-            }
-        }
-    }
 }
 </script>
 
