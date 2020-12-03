@@ -45,7 +45,7 @@
                 </v-col>
                 <v-col align-self="center">
                     <v-container row class="px-0 mx-0">
-                        <AddEntityMenu></AddEntityMenu>
+                        <AddEntityMenu @add:project="createProject()"></AddEntityMenu>
 
                         <v-spacer></v-spacer>
 
@@ -74,7 +74,7 @@ import EntityMenu from "./components/app/EnityMenu";
 import AddEntityMenu from "./components/app/AddEntityMenu";
 import AccountMenu from "./components/app/AccountMenu";
 import Projects from "./views/projects/ProjectList";
-import {mapState} from "vuex";
+import {mapActions, mapState} from "vuex";
 import ProjectEditor from "./components/projects/ProjectEditor";
 
 export default {
@@ -91,6 +91,9 @@ export default {
         })
     },
     methods: {
+        ...mapActions('projects/projectEditor', [
+            'createProject'
+        ]),
         listProjects(filter) {
             this.$router.push({name: Projects.name, params: {filter}});
         }

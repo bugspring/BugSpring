@@ -13,7 +13,7 @@
         <v-card-actions>
             <v-btn v-if="!isCreate"
                    color="error"
-                   @click="destroy()">
+                   @click="create()">
                 {{ $t('action.delete') }}
             </v-btn>
 
@@ -61,6 +61,16 @@ export default {
 
             return mutated;
         },
+    },
+    methods: {
+        ...mapActions('projects/projectEditor', [
+            'closeEditor'
+        ]),
+        ...mapActions('projects/projectCrud', [
+            'createProject',
+            'updateProject',
+            'deleteProject'
+        ]),
 
         create() {
             this.createProject(this.mutatedProject)
@@ -86,16 +96,8 @@ export default {
         cancel() {
             this.closeEditor();
         }
-    },
-    methods: {
-        ...mapActions('projects/projectEditor', [
-            'closeEditor'
-        ]),
-        ...mapActions('projects/projectCrud', [
-            'createProject',
-            'updateProject',
-            'deleteProject'
-        ]),
+
+
     }
 }
 </script>
