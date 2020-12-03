@@ -5,9 +5,9 @@
         <v-card-text>
             <v-form>
                 <v-text-field :label="$t('project.name')"
-                              v-model="name"/>
+                              v-model="project.name"/>
                 <v-textarea :label="$t('project.description')"
-                            v-model="description"/>
+                            v-model="project.description"/>
             </v-form>
         </v-card-text>
         <v-card-actions>
@@ -37,12 +37,6 @@ import {mapActions, mapGetters, mapState} from "vuex";
 
 export default {
     name: "ProjectEditor",
-    data() {
-        return {
-            name: '',
-            description: ''
-        }
-    },
     computed: {
         ...mapState('projects/projectEditor', [
             'project'
@@ -52,14 +46,6 @@ export default {
         ]),
         isCreate() {
             return this.mode === 'create';
-        },
-
-        mutatedProject() {
-            let mutated = this.project || {};
-            mutated.name = this.name;
-            mutated.description = this.description;
-
-            return mutated;
         },
     },
     methods: {
@@ -73,14 +59,14 @@ export default {
         ]),
 
         create() {
-            this.createProject(this.mutatedProject)
+            this.createProject(this.project)
                 .then(_ => {
                     this.closeEditor();
                 });
         },
 
         update() {
-            this.updateProject(this.mutatedProject)
+            this.updateProject(this.project)
                 .then(_ => {
                     this.closeEditor();
                 });

@@ -22,6 +22,8 @@ export default {
             state.projects = projects;
         },
         setProject(state, project) {
+            if (state.projects === null)
+                return;
             state.projects = state.projects.map(p => {
                 return project.id === p.id ? project : p;
             });

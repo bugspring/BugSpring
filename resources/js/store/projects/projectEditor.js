@@ -18,7 +18,7 @@ export default {
             state.isOpen = isOpen;
         },
         setProject(state, project) {
-            state.project = project;
+            state.project = Object.assign({}, project);
         }
     },
     actions: {
@@ -27,7 +27,7 @@ export default {
             commit('setIsOpen', true);
         },
 
-        updateProject({commit}, project){
+        updateProject({commit}, project) {
             commit('setProject', project);
             commit('setIsOpen', true);
         },

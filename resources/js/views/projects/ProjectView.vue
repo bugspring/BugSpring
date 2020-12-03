@@ -9,12 +9,17 @@
                     <v-col cols="auto" align-self="center">
                         <span class="text-h4 text-center">{{ project.name }}</span>
                     </v-col>
-                </v-row>
-                <v-row>
-                    <v-col>
-                        <p>{{ project.description }}</p>
+                    <v-spacer />
+                    <v-col cols="auto">
+                        <v-btn color="primary" @click="updateProject(project)">
+                            {{ $t('project.edit') }}
+                        </v-btn>
                     </v-col>
                 </v-row>
+
+
+                <v-divider />
+
             </v-card-text>
         </v-card>
     </v-container>
@@ -38,6 +43,9 @@ export default {
     methods: {
         ...mapActions('projects/projectCrud', [
             'loadProject',
+        ]),
+        ...mapActions('projects/projectEditor', [
+            'updateProject'
         ])
     },
     mounted() {

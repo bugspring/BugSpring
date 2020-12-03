@@ -6,7 +6,8 @@
                     <v-col>
                         <span class="text-h4">{{ $tc('project.label', 2) }}</span>
                     </v-col>
-                    <v-col class="text-right">
+                    <v-spacer />
+                    <v-col cols="auto">
                         <v-btn color="primary" @click="createProject()">
                             {{ $t('project.add') }}
                         </v-btn>
