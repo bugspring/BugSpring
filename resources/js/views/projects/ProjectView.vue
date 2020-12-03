@@ -50,6 +50,13 @@ export default {
     },
     mounted() {
         this.loadProject(this.$route.params.id);
+    },
+    watch: {
+        project(newProject, oldProject) {
+            if(newProject === null) {
+                this.$router.back();
+            }
+        }
     }
 }
 </script>

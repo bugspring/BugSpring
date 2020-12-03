@@ -5,10 +5,10 @@ import 'vuetify/dist/vuetify.min.css'
 import '@mdi/font/css/materialdesignicons.css'
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
+import Vuetify from 'vuetify'
+
 
 import en from '../lang/en/messages'
-
-import Vuetify from 'vuetify'
 
 import App from './App.vue'
 import router from './router'
@@ -16,18 +16,17 @@ import store from './store/store'
 import config from "./config";
 
 
+// noinspection ES6UnusedImports
+import httpClient from './util/httpClient'
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
  * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
  */
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
-
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
 Vue.component(
     'passport-clients',
@@ -52,6 +51,7 @@ Vue.component(
 
 Vue.config.productionTip = false;
 
+Vue.use(VueI18n);
 Vue.use(Vuetify);
 
 const app = new Vue({
@@ -68,3 +68,5 @@ const app = new Vue({
     render: function(h) { return h(App);},
     el: '#app',
 });
+
+window.app = app;

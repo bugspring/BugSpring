@@ -57,10 +57,10 @@ export default {
         deleteProject({commit}, project) {
             commit('setIsLoading', true);
 
-            return projectApi.destroy(project)
+            return projectApi.destroy(project.id)
                 .then(project => {
                     commit('setProject', null);
-                    commit('projects/removeProject', project);
+                    commit('projects/removeProject', project, {root: true});
                 })
                 .finally(() => {
                     commit('setIsLoading', false);

@@ -5,7 +5,13 @@
         "cancel": "Cancel",
         "create": "Create",
         "update": "Update",
-        "delete": "delete"
+        "delete": "Delete",
+        "confirm": {
+            "short": "Sure?"
+        }
+    },
+    "error": {
+        "request-failed": "HTTP request failed!"
     },
     "project": {
         "label": "Project | Projects",

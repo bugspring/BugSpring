@@ -11,11 +11,11 @@
             </v-form>
         </v-card-text>
         <v-card-actions>
-            <v-btn v-if="!isCreate"
-                   color="error"
-                   @click="create()">
+            <confirm-button v-if="!isCreate"
+                            color="error"
+                            @click="destroy()">
                 {{ $t('action.delete') }}
-            </v-btn>
+            </confirm-button>
 
             <v-spacer/>
 
@@ -34,9 +34,11 @@
 
 <script>
 import {mapActions, mapGetters, mapState} from "vuex";
+import ConfirmButton from "../ConfirmButton";
 
 export default {
     name: "ProjectEditor",
+    components: {ConfirmButton},
     computed: {
         ...mapState('projects/projectEditor', [
             'project'

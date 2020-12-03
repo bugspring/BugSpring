@@ -56,16 +56,16 @@
             </v-row>
         </v-app-bar>
 
+
+        <v-main class="fill-height grey lighten-4">
+            <router-view></router-view>
+        </v-main>
         <v-dialog v-model="isProjectEditorOpen"
                   persistent
                   max-width="800">
             <project-editor></project-editor>
         </v-dialog>
-
-        <v-main class="fill-height grey lighten-4">
-            <router-view></router-view>
-        </v-main>
-
+        <notification-snakbar />
     </v-app>
 </template>
 
@@ -76,10 +76,12 @@ import AccountMenu from "./components/app/AccountMenu";
 import Projects from "./views/projects/ProjectList";
 import {mapActions, mapState} from "vuex";
 import ProjectEditor from "./components/projects/ProjectEditor";
+import NotificationSnakbar from "./components/NotificationSnakbar";
 
 export default {
     name: "App.vue",
     components: {
+        NotificationSnakbar,
         ProjectEditor,
         AccountMenu,
         AddEntityMenu,
