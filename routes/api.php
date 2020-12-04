@@ -24,10 +24,10 @@ Route::group(['namespace' => 'Api'], function()
     Route::group(['middleware' => 'auth:api'], function()
     {
 
-        Route::post('/user/details', 'UserController@details');
+        Route::apiResource('/user','UserController');
+
         Route::apiResource('/project/{project}/issue', 'IssueController');
         Route::apiResource('/project', 'ProjectController');
-
 
     });
 

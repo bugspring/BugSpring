@@ -4,6 +4,8 @@
 namespace App\Repositories;
 
 
+use App\Models\User;
+
 class UserRepository
 {
     /**
@@ -24,5 +26,14 @@ class UserRepository
         if($project->users->contains('id', $userId))
             return true;
         return false;
+    }
+
+    public function getUsers(){
+        return User::all();
+    }
+
+    public function getUserById(int $id)
+    {
+        return User::findOrFail($id);
     }
 }

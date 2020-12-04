@@ -11,7 +11,7 @@ use Laravel\Passport\HasApiTokens;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 
 /**
- * @method static User find(int $userId)
+ * @method static User findOrFail(int $userId)
  *
  * @property int id
  * @property string name
