@@ -32,8 +32,25 @@ class UserRepository
         return User::all();
     }
 
-    public function getUserById(int $id)
+    public function getUserById(int $id, $with=[])
     {
-        return User::findOrFail($id);
+        return User::whereId($id)->with($with)->firstOrFail();
+    }
+
+    public function updateUser(User $user, array $updateData, $with=[])
+    {
+        $user->update($updateData);
+        return $this->getUserById($user->id, $with);
+    }
+
+    /**
+     * @param Project $project
+     * @return Project
+     * @throws Exception
+     */
+    public function deleteUser(User $user)
+    {
+        $user->delete();
+        return $user;
     }
 }

@@ -21,17 +21,6 @@ class UserApiTest extends TestCase
         'email',
         'created_at',
         'updated_at',
-
-        'projects' => [
-            '*' => [
-                'id',
-                'owner_id',
-                'name',
-                'description',
-                'created_at',
-                'updated_at',
-            ],
-        ],
     ];
 
     /** @var User $user */
@@ -48,12 +37,13 @@ class UserApiTest extends TestCase
     {
         Passport::actingAs($this->user);
 
-        $users = factory(User::class, 10)->create();
-
-        dd($this->json('get',self::BASE_PATH)->getContent());
+        factory(User::class, 10)->create();
+        $users = User::all();
         $this->json('get', self::BASE_PATH)
             ->assertStatus(200)
-            ->assertJsonStructure(self::JSON_STRUCTURE)
+            ->assertJsonStructure([
+                '*' => self::JSON_STRUCTURE
+            ])
             ->assertJson($users->toArray());
     }
 

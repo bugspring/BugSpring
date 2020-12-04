@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Exceptions\ApiException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\User\DeleteUserRequest;
 use App\Http\Requests\Api\User\IndexUserRequest;
 use App\Http\Requests\Api\User\ShowUserRequest;
 use App\Http\Requests\Api\User\StoreUserRequest;
+use App\Http\Requests\Api\User\UpdateUserRequest;
 use App\Models\User;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
@@ -32,7 +34,7 @@ class UserController extends Controller
     public function index(IndexUserRequest $request)
     {
         return $this->userRepository->getUsers();
-    }   
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -63,10 +65,19 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateUserRequest $request, User $user)
     {
         $updateData = [];
-        if($request->has())
+        if($request->has('name'))
+        {
+            $updateData['name'] = $request->name;
+        }
+        if($request->has('email'))
+        {
+            $updateData['email'] = $request->email;
+        }
+        $user = $this->userRepository->updateUser($user, $updateData);
+        return response($user, 201);
     }
 
     /**
@@ -75,8 +86,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(DeleteUserRequest $request, User $user)
     {
-        //
+        $user = $this->userRepository->deleteUser($user);
+        return response($user, 201);
     }
 }

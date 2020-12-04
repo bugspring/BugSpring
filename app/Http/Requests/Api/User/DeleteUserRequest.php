@@ -4,14 +4,7 @@ namespace App\Http\Requests\Api\User;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-/**
- * Class UpdateUserRequest
- * @package App\Http\Requests\Api\User
- *
- * @property string name
- * @property string email
- */
-class UpdateUserRequest extends FormRequest
+class DeleteUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -31,8 +24,7 @@ class UpdateUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'string',
-            'email' => 'email:rfc'
+            //
         ];
     }
 }
