@@ -9,7 +9,7 @@
                 :key="'DIVIDER-'+index"
             ></v-divider>
         </template>
-        </v-list>
+    </v-list>
 </template>
 
 <script>
@@ -29,5 +29,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

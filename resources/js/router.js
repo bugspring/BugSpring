@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from './views/Home.vue'
 import About from './views/About.vue'
 import Dashboard from "./views/Dashboard";
-import Projects from "./views/Projects";
-import Project from "./views/Project";
+
+import ProjectList from "./views/projects/ProjectList";
+import ProjectView from "./views/projects/ProjectView";
 
 Vue.use(Router)
 
@@ -17,13 +17,13 @@ export default new Router({
         },
         {
             path: '/list/projects/:filter',
-            name: Projects.name,
-            component: Projects
+            name: ProjectList.name,
+            component: ProjectList
         },
         {
             path: '/projects/:id',
-            name: Project.name,
-            component: Project
+            name: ProjectView.name,
+            component: ProjectView
         },
         {
             path: '/about',

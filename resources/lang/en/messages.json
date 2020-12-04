@@ -1,13 +1,28 @@
 {
     "search": "search",
     "frequently-visited": "Frequently visited",
+    "action": {
+        "cancel": "Cancel",
+        "create": "Create",
+        "update": "Update",
+        "delete": "Delete",
+        "confirm": {
+            "short": "Sure?"
+        }
+    },
+    "error": {
+        "request-failed": "HTTP request failed!"
+    },
     "project": {
         "label": "Project | Projects",
         "own": "Your Projects",
         "starred": "Starred Projects",
         "browse": "Explore Projects",
         "no-frequently": "Projects you visit often will appear here",
-        "add": "New Project"
+        "add": "New Project",
+        "edit": "Edit Project",
+        "name": "Project name",
+        "description": "Description"
     },
     "issue": {
         "label": "Issue | Issues",

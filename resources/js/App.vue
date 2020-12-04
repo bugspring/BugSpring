@@ -14,20 +14,20 @@
                         <v-spacer></v-spacer>
 
                         <v-divider vertical class="ma-0"></v-divider>
-                        <EnityMenu :label="$tc('project.label', 2)"
-                                   :own-title="$t('project.own')" @own-click="listProjects('own')"
-                                   :starred-title="$t('project.starred')" @starred-click="listProjects('starred')"
-                                   :browse-title="$t('project.browse')" @browse-click="listProjects('browse')"
-                                   :no-frequently-title="$t('project.no-frequently')">
-                        </EnityMenu>
+                        <EntityMenu :label="$tc('project.label', 2)"
+                                    :own-title="$t('project.own')" @own-click="listProjects('own')"
+                                    :starred-title="$t('project.starred')" @starred-click="listProjects('starred')"
+                                    :browse-title="$t('project.browse')" @browse-click="listProjects('browse')"
+                                    :no-frequently-title="$t('project.no-frequently')">
+                        </EntityMenu>
 
                         <v-divider vertical class="ma-0"></v-divider>
-                        <EnityMenu :label="$tc('issue.label', 2)"
-                                   :own-title="$t('issue.own')"
-                                   :starred-title="$t('issue.starred')"
-                                   :browse-title="$t('issue.browse')"
-                                   :no-frequently-title="$t('issue.no-frequently')">
-                        </EnityMenu>
+                        <EntityMenu :label="$tc('issue.label', 2)"
+                                    :own-title="$t('issue.own')"
+                                    :starred-title="$t('issue.starred')"
+                                    :browse-title="$t('issue.browse')"
+                                    :no-frequently-title="$t('issue.no-frequently')">
+                        </EntityMenu>
 
                         <v-divider vertical class="ma-0"></v-divider>
 
@@ -45,7 +45,7 @@
                 </v-col>
                 <v-col align-self="center">
                     <v-container row class="px-0 mx-0">
-                        <AddEntityMenu ></AddEntityMenu>
+                        <AddEntityMenu @add:project="createProject()"></AddEntityMenu>
 
                         <v-spacer></v-spacer>
 
@@ -56,38 +56,56 @@
             </v-row>
         </v-app-bar>
 
+
         <v-main class="fill-height grey lighten-4">
             <router-view></router-view>
         </v-main>
+
+        <project-editor />
+        <notification-snakbar />
 
     </v-app>
 </template>
 
 <script>
-    import EnityMenu from "./components/app/EnityMenu";
-    import AddEntityMenu from "./components/app/AddEntityMenu";
-    import AccountMenu from "./components/app/AccountMenu";
-    import Projects from "./views/Projects";
+import EntityMenu from "./components/app/EnityMenu";
+import AddEntityMenu from "./components/app/AddEntityMenu";
+import AccountMenu from "./components/app/AccountMenu";
+import Projects from "./views/projects/ProjectList";
+import {mapActions, mapState} from "vuex";
+import ProjectEditor from "./components/projects/ProjectEditor";
+import NotificationSnakbar from "./components/NotificationSnakbar";
+import projectEditor from "./util/dialogs/projectEditor";
 
-    export default {
-        name: "App.vue",
-        components: {
-            AccountMenu,
-            AddEntityMenu,
-            EnityMenu
+export default {
+    name: "App.vue",
+    components: {
+        NotificationSnakbar,
+        ProjectEditor,
+        AccountMenu,
+        AddEntityMenu,
+        EntityMenu
+    },
+    computed: {
+        ...mapState('projects/projectEditor', {
+            isProjectEditorOpen: 'isOpen'
+        })
+    },
+    methods: {
+        createProject() {
+            projectEditor.createProject();
         },
-        methods: {
-            listProjects(filter) {
-                this.$router.push({name: Projects.name, params:{filter}});
-            }
+        listProjects(filter) {
+            this.$router.push({name: Projects.name, params: {filter}});
         }
     }
+}
 </script>
 
 <style scoped>
-    .link {
-        color: white;
-        display: flex;
-        text-decoration: none;
-    }
+.link {
+    color: white;
+    display: flex;
+    text-decoration: none;
+}
 </style>

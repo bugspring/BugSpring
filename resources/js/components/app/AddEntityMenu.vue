@@ -6,10 +6,10 @@
             </v-btn>
         </template>
         <v-list>
-            <v-list-item @click="">
+            <v-list-item @click="$emit('add:project')">
                 <v-list-item-title>{{$t('project.add')}}</v-list-item-title>
             </v-list-item>
-            <v-list-item @click="">
+            <v-list-item @click="$emit('add:issue')">
                 <v-list-item-title>{{$t('issue.add')}}</v-list-item-title>
             </v-list-item>
         </v-list>
@@ -18,7 +18,11 @@
 
 <script>
     export default {
-        name: "AddEntityMenu"
+        name: "AddEntityMenu",
+        emits: [
+            'app:project',
+            'app:issue',
+        ]
     }
 </script>
 
