@@ -11,7 +11,11 @@ use App\Http\Requests\Api\User\StoreUserRequest;
 use App\Http\Requests\Api\User\UpdateUserRequest;
 use App\Models\User;
 use App\Repositories\UserRepository;
+use Carbon\Carbon;
+use Firebase\JWT\JWT;
+use Illuminate\Encryption\Encrypter;
 use Illuminate\Http\Request;
+use Laravel\Passport\Passport;
 
 class UserController extends Controller
 {
@@ -39,7 +43,7 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return ApiException
      */
     public function store(StoreUserRequest $request)
@@ -50,30 +54,48 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return User
+     * @param ShowUserRequest $request
+     * @param int $id
+     * @param Encrypter $encrypter
+     * @return array
      */
-    public function show(ShowUserRequest $request, User $user)
+    public function show(ShowUserRequest $request, $id, Encrypter $encrypter)
     {
-        return $this->userRepository->getUserById($user->id);
+        if ($id == 'session') {
+            $session = [
+                'user' => $this->userRepository->getUserById($request->user()->id)
+            ];
+
+            if($request->hasCookie(Passport::cookie()))
+            { // logged in
+                $cookie = decrypt($request->cookie(Passport::cookie()), false);
+                $payload = JWT::decode(explode('|', $cookie)[1], $encrypter->getKey(), ['HS256']);
+
+                $session['expiry'] = $payload->expiry;
+            }
+
+
+            return $session;
+        } else {
+            $user = $this->userRepository->getUserById($id);
+            return $this->userRepository->getUserById($user->id);
+        }
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateUserRequest $request, User $user)
     {
         $updateData = [];
-        if($request->has('name'))
-        {
+        if ($request->has('name')) {
             $updateData['name'] = $request->name;
         }
-        if($request->has('email'))
-        {
+        if ($request->has('email')) {
             $updateData['email'] = $request->email;
         }
         $user = $this->userRepository->updateUser($user, $updateData);
@@ -83,7 +105,7 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy(DeleteUserRequest $request, User $user)

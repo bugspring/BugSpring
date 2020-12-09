@@ -28,12 +28,12 @@
                         <v-list-item-title>Settings</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-                <v-list-item @click="">
+                <v-list-item @click="logout()">
                     <v-list-item-content>
                         <v-list-item-title>Logout</v-list-item-title>
                     </v-list-item-content>
+                    <form id="logout-form" method="post" action="/logout" ></form>
                 </v-list-item>
-
             </v-list>
         </v-card>
     </v-menu>
@@ -41,7 +41,12 @@
 
 <script>
     export default {
-        name: "AccountMenu"
+        name: "AccountMenu",
+        methods: {
+            logout(){
+                document.getElementById('logout-form').submit();
+            }
+        }
     }
 </script>
 

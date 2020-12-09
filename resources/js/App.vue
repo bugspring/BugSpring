@@ -46,7 +46,8 @@
                 <v-col align-self="center">
                     <v-container row class="px-0 mx-0">
                         <AddEntityMenu @add:project="createProject()"></AddEntityMenu>
-
+<v-spacer/>
+                        <session-countdown/>
                         <v-spacer></v-spacer>
 
                         <AccountMenu></AccountMenu>
@@ -76,10 +77,12 @@ import {mapActions, mapState} from "vuex";
 import ProjectEditor from "./components/projects/ProjectEditor";
 import NotificationSnakbar from "./components/NotificationSnakbar";
 import projectEditor from "./util/dialogs/projectEditor";
+import SessionCountdown from "./components/SessionCountdown";
 
 export default {
     name: "App.vue",
     components: {
+        SessionCountdown,
         NotificationSnakbar,
         ProjectEditor,
         AccountMenu,

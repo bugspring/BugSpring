@@ -16,7 +16,9 @@ import store from './store/store'
 import config from "./config";
 import SessionMonitor from './util/sessionMonitor'
 
+
 SessionMonitor.notifyHttpErrors();
+SessionMonitor.logoutOnSessionExpire();
 
 /**
  * The following block of code may be used to automatically register your
