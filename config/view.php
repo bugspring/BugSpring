@@ -33,4 +33,8 @@ return [
         realpath(storage_path('framework/views'))
     ),
 
+    'login' => [
+        'redirect_param' => env('MIX_LOGIN_REDIRECT_PARAM', 'r'),
+        'error_param' => env('MIX_LOGIN_ERROR_PARAM', 'error'),
+    ]
 ];

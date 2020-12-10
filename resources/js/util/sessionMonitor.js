@@ -19,7 +19,7 @@ const SessionMonitor = {
     session: null,
     notifyHttpErrors() {
         axios.interceptors.response.use(response => response, error => {
-            if (error.response.status === 409) {
+            if (error.response.status === 401) {
                 _gotoLogin(error.response.status);
                 return;
             }
