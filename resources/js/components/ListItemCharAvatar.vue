@@ -132,10 +132,10 @@ const TEXT_COLORS = [
 
 <style scoped>
 .text-lg {
-    font-size: 1.5rem;
+    font-size: 1.9rem;
 }
 
 .text-md {
-    font-size: .875rem;
+    font-size: 1.1rem;
 }
 </style>

@@ -6,7 +6,13 @@ export default {
         session: null,
         isLoading: false,
     },
-    getters:{},
+    getters:{
+        loggedInUser(state) {
+            if(state.session == null)
+                return null;
+            return state.session.user
+        }
+    },
     mutations:{
         setSession(state, session) {
             state.session = session;
