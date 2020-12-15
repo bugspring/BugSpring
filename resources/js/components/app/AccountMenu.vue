@@ -11,13 +11,11 @@
         <v-card>
             <v-list>
                 <v-list-item>
-                    <v-list-item-avatar color="green" class="white--text">
-                        {{"Mmweber".charAt(0)}}
-                    </v-list-item-avatar>
+                    <list-item-char-avatar :text="loggedInUser.name" />
 
                     <v-list-item-content>
-                        <v-list-item-title class="font-weight-black">Max Weber</v-list-item-title>
-                        <v-list-item-title>@mweber</v-list-item-title>
+                        <v-list-item-title class="font-weight-black">{{ loggedInUser.name }}</v-list-item-title>
+                        <v-list-item-title>{{loggedInUser.email}}</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
 
@@ -28,20 +26,34 @@
                         <v-list-item-title>Settings</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-                <v-list-item @click="">
+                <v-list-item @click="logout()">
                     <v-list-item-content>
                         <v-list-item-title>Logout</v-list-item-title>
                     </v-list-item-content>
+                    <form id="logout-form" method="post" action="/logout" ></form>
                 </v-list-item>
-
             </v-list>
         </v-card>
     </v-menu>
 </template>
 
 <script>
-    export default {
-        name: "AccountMenu"
+import {mapGetters} from "vuex";
+import ListItemCharAvatar from "../ListItemCharAvatar";
+
+export default {
+        name: "AccountMenu",
+    components: {ListItemCharAvatar},
+    computed: {
+            ...mapGetters('user', [
+                'loggedInUser'
+            ])
+        },
+        methods: {
+            logout(){
+                document.getElementById('logout-form').submit();
+            }
+        }
     }
 </script>
 

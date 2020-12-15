@@ -14,10 +14,11 @@ import App from './App.vue'
 import router from './router'
 import store from './store/store'
 import config from "./config";
+import SessionMonitor from './util/sessionMonitor'
 
 
-// noinspection ES6UnusedImports
-import httpClient from './util/http-client'
+SessionMonitor.notifyHttpErrors();
+SessionMonitor.logoutOnSessionExpire();
 
 /**
  * The following block of code may be used to automatically register your

@@ -4,6 +4,8 @@
 namespace App\Repositories;
 
 
+use App\Models\User;
+
 class UserRepository
 {
     /**
@@ -24,5 +26,31 @@ class UserRepository
         if($project->users->contains('id', $userId))
             return true;
         return false;
+    }
+
+    public function getUsers(){
+        return User::all();
+    }
+
+    public function getUserById(int $id, $with=[])
+    {
+        return User::whereId($id)->with($with)->firstOrFail();
+    }
+
+    public function updateUser(User $user, array $updateData, $with=[])
+    {
+        $user->update($updateData);
+        return $this->getUserById($user->id, $with);
+    }
+
+    /**
+     * @param Project $project
+     * @return Project
+     * @throws Exception
+     */
+    public function deleteUser(User $user)
+    {
+        $user->delete();
+        return $user;
     }
 }

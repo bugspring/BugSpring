@@ -3,7 +3,7 @@
 
         <v-row no-gutters>
             <v-col cols="1" align-self="center">
-                <list-item-char-avatar :text="project.name"></list-item-char-avatar>
+                <list-item-char-avatar :text="project.name" />
             </v-col>
             <v-col cols="7" align-self="center">
                 <v-list-item-content>
