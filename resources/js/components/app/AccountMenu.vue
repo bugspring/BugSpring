@@ -9,7 +9,7 @@
         </template>
 
         <v-card>
-            <v-list>
+            <v-list v-if="loggedInUser">
                 <v-list-item>
                     <list-item-char-avatar :text="loggedInUser.name" />
 
@@ -33,6 +33,7 @@
                     <form id="logout-form" method="post" action="/logout" ></form>
                 </v-list-item>
             </v-list>
+            <v-skeleton-loader v-else type="list-item-avatar-two-line, divider, list-item, list-item" width="300" />
         </v-card>
     </v-menu>
 </template>

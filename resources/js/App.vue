@@ -14,11 +14,22 @@
                         <v-spacer></v-spacer>
 
                         <v-divider vertical class="ma-0"></v-divider>
+
                         <EntityMenu :label="$tc('project.label', 2)"
-                                    :own-title="$t('project.own')" @own-click="listProjects('own')"
-                                    :starred-title="$t('project.starred')" @starred-click="listProjects('starred')"
-                                    :browse-title="$t('project.browse')" @browse-click="listProjects('browse')"
                                     :no-frequently-title="$t('project.no-frequently')">
+                            <template v-slot:menu>
+                                <v-list>
+                                    <v-list-item @click="listProjects('own')">
+                                        {{ $t('project.own') }}
+                                    </v-list-item>
+                                    <v-list-item @click="listProjects('starred')">
+                                        {{ $t('project.starred') }}
+                                    </v-list-item>
+                                    <v-list-item @click="listProjects('browse')">
+                                        {{ $t('project.browse') }}
+                                    </v-list-item>
+                                </v-list>
+                            </template>
                         </EntityMenu>
 
                         <v-divider vertical class="ma-0"></v-divider>
@@ -46,7 +57,7 @@
                 <v-col align-self="center">
                     <v-container row class="px-0 mx-0">
                         <AddEntityMenu @add:project="createProject()"></AddEntityMenu>
-<v-spacer/>
+                        <v-spacer/>
                         <session-countdown/>
                         <v-spacer></v-spacer>
 
@@ -62,8 +73,8 @@
             <router-view></router-view>
         </v-main>
 
-        <project-editor />
-        <notification-snakbar />
+        <project-editor/>
+        <notification-snakbar/>
 
     </v-app>
 </template>
@@ -99,7 +110,7 @@ export default {
             projectEditor.createProject();
         },
         listProjects(filter) {
-            this.$router.push({name: Projects.name, params: {filter}});
+            this.$router.push({name: Projects.name, params: {filter}}).catch(err => {});
         }
     }
 }
