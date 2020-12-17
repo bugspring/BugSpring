@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Exceptions\ApiException;
 use App\Repositories\ProjectRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -38,7 +37,7 @@ class Project extends Model
         'description',
         'is_favorite'
     ];
-    protected $with     = ['issue_states'];
+    protected $with     = ['issue_types'];
     protected $hidden   = ['pivot'];
 
     protected $appends = ['is_favorite'];
@@ -53,9 +52,9 @@ class Project extends Model
         return $this->belongsToMany(User::class);
     }
 
-    public function issue_states()
+    public function issue_types()
     {
-        return $this->hasMany(IssueState::class);
+        return $this->hasMany(IssueType::class);
     }
 
     public function issues()

@@ -2,14 +2,12 @@
 
 namespace Tests\Feature;
 
-use App\Models\IssueState;
-use Bouncer;
 use App\Models\Issue;
+use App\Models\IssueType;
 use App\Models\Project;
 use App\Models\User;
+use Bouncer;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
 
@@ -29,7 +27,7 @@ class IssuePermissionTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->user = factory(User::class)->create();
+        $this->user    = factory(User::class)->create();
         $this->project = factory(Project::class)->create([
             'owner_id' => $this->user->id,
         ]);
@@ -65,15 +63,15 @@ class IssuePermissionTest extends TestCase
         $this->user->allow('create issue', $this->project);
 
 
-        $this->json('POST', $this->basePath,[
-            'name' => 'Lorem Iprum',
-            'issue_state_id' => factory(IssueState::class)->create(['project_id' => $this->project->id])->id
+        $this->json('POST', $this->basePath, [
+            'name'          => 'Lorem Iprum',
+            'issue_type_id' => factory(IssueType::class)->create(['project_id' => $this->project->id])->id
         ])->assertStatus(201);
 
         $this->user->forbid('create issue', $this->project);
         Bouncer::refresh();
 
-        $this->json('POST', $this->basePath,[
+        $this->json('POST', $this->basePath, [
             'name' => 'dolor sit'
         ])->assertStatus(403);
     }

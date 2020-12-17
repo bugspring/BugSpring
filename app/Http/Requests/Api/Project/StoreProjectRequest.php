@@ -12,7 +12,7 @@ use Bouncer;
  *
  * @property string name
  * @property string description
- * @property array issue_states
+ * @property array issue_types
  */
 class StoreProjectRequest extends FormRequest
 {
@@ -36,9 +36,9 @@ class StoreProjectRequest extends FormRequest
         return [
             'name' => 'required|string',
             'description' => 'required|string',
-            'issue_states' => 'sometimes|array',
-            'issue_states.*.title' => 'required|string|distinct',
-            'issue_states.*.icon'  => 'required|string',
+            'issue_types' => 'sometimes|array',
+            'issue_types.*.title' => 'required|string|distinct',
+            'issue_types.*.icon'  => 'required|string',
         ];
     }
 }

@@ -2,15 +2,13 @@
 
 namespace Tests\Feature;
 
-use App\Models\IssueState;
+use App\Models\IssueType;
 use App\Models\Project;
 use App\Models\User;
+use Bouncer;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
-use Bouncer;
 
 class ProjectPermissionTest extends TestCase
 {
@@ -27,29 +25,29 @@ class ProjectPermissionTest extends TestCase
         $this->user = factory(User::class)->create();
     }
 
-    public function testStoreIssueStatesWithProjectNeedsCreatePermission()
+    public function testStoreIssueTypesWithProjectNeedsCreatePermission()
     {
         Passport::actingAs($this->user);
 
         $projectData = [
-            'name' => "BugSpring",
+            'name'        => "BugSpring",
             'description' => "A modern Issue Tracker...",
-            'issue_states' => [
+            'issue_types' => [
                 [
                     'title' => "open",
-                    'icon' => "mdi-checkbox-multiple-blank-outline"
+                    'icon'  => "mdi-checkbox-multiple-blank-outline"
                 ],
                 [
                     'title' => "in dev",
-                    'icon' => "mdi-progress-wrench"
+                    'icon'  => "mdi-progress-wrench"
                 ],
                 [
                     'title' => "fixed",
-                    'icon' => "mdi-check-box-multiple-outline"
+                    'icon'  => "mdi-check-box-multiple-outline"
                 ],
                 [
                     'title' => "won't fix",
-                    'icon' => "mdi-close-box-multiple"
+                    'icon'  => "mdi-close-box-multiple"
                 ]
             ],
         ];
@@ -65,7 +63,7 @@ class ProjectPermissionTest extends TestCase
             ->assertStatus(403);
     }
 
-    public function testAddIssueStatesToProjectsNeedsUpdatePermission()
+    public function testAddIssueTypesToProjectsNeedsUpdatePermission()
     {
         Passport::actingAs($this->user);
 
@@ -74,22 +72,22 @@ class ProjectPermissionTest extends TestCase
         ]);
 
         $updateData = [
-            'issue_states' => [
+            'issue_types' => [
                 [
                     'title' => "open",
-                    'icon' => "mdi-checkbox-multiple-blank-outline"
+                    'icon'  => "mdi-checkbox-multiple-blank-outline"
                 ],
                 [
                     'title' => "in dev",
-                    'icon' => "mdi-progress-wrench"
+                    'icon'  => "mdi-progress-wrench"
                 ],
                 [
                     'title' => "fixed",
-                    'icon' => "mdi-check-box-multiple-outline"
+                    'icon'  => "mdi-check-box-multiple-outline"
                 ],
                 [
                     'title' => "won't fix",
-                    'icon' => "mdi-close-box-multiple"
+                    'icon'  => "mdi-close-box-multiple"
                 ]
             ]
         ];
@@ -105,31 +103,31 @@ class ProjectPermissionTest extends TestCase
             ->assertStatus(403);
     }
 
-    public function testUpdateIssueStatesInProjectsNeedsUpdatePermission()
+    public function testUpdateIssueTypesInProjectsNeedsUpdatePermission()
     {
         Passport::actingAs($this->user);
 
-        $project = factory(Project::class)->create([
+        $project      = factory(Project::class)->create([
             'owner_id' => $this->user->id,
         ]);
-        $issue_states = factory(IssueState::class, 4)->create([
+        $issue_types = factory(IssueType::class, 4)->create([
             'project_id' => $project->id
         ]);
 
         $updateData = [
-            'issue_states' => [
-                ['id' => $issue_states[0]->id],
+            'issue_types' => [
+                ['id' => $issue_types[0]->id],
                 [
-                    'id' => $issue_states[1]->id,
+                    'id'    => $issue_types[1]->id,
                     'title' => "in dev",
-                    'icon' => "mdi-progress-wrench"
+                    'icon'  => "mdi-progress-wrench"
                 ],
                 [
-                    'id' => $issue_states[2]->id,
+                    'id'    => $issue_types[2]->id,
                     'title' => "fixed",
-                    'icon' => "mdi-check-box-multiple-outline"
+                    'icon'  => "mdi-check-box-multiple-outline"
                 ],
-                ['id' => $issue_states[3]->id]
+                ['id' => $issue_types[3]->id]
             ]
         ];
 
@@ -144,21 +142,21 @@ class ProjectPermissionTest extends TestCase
             ->assertStatus(403);
     }
 
-    public function testRemoveIssueStatesFromProjectsNeedsUpdatePermission()
+    public function testRemoveIssueTypesFromProjectsNeedsUpdatePermission()
     {
         Passport::actingAs($this->user);
 
-        $project = factory(Project::class)->create([
+        $project      = factory(Project::class)->create([
             'owner_id' => $this->user->id,
         ]);
-        $issue_states = factory(IssueState::class, 4)->create([
+        $issue_types = factory(IssueType::class, 4)->create([
             'project_id' => $project->id
         ]);
 
         $updateData = [
-            'issue_states' => [
-                ['id' => $issue_states[0]->id],
-                ['id' => $issue_states[2]->id],
+            'issue_types' => [
+                ['id' => $issue_types[0]->id],
+                ['id' => $issue_types[2]->id],
             ]
         ];
 
@@ -180,14 +178,14 @@ class ProjectPermissionTest extends TestCase
         $otherUser = factory(User::class)->create();
 
         // These projects should be returned by /api/project
-        $ownProjects = factory(Project::class, 50)->create([
-            'owner_id' => $this->user->id,
+        $ownProjects     = factory(Project::class, 50)->create([
+            'owner_id'    => $this->user->id,
             'description' => 'own',
         ]);
-        $linkedProjects = factory(Project::class, 50)->create([
-            'owner_id' => $otherUser->id,
+        $linkedProjects  = factory(Project::class, 50)->create([
+            'owner_id'    => $otherUser->id,
             'description' => 'linked with permission',
-        ])->each(function(Project $project) {
+        ])->each(function (Project $project) {
             $project->users()->attach($this->user);
             $this->user->allow('read', $project);
         });
@@ -195,18 +193,18 @@ class ProjectPermissionTest extends TestCase
 
         // These projects should not be returned by /api/project
         $invisibleLinkedProjects = factory(Project::class, 1)->create([
-            'owner_id' => $otherUser->id,
+            'owner_id'    => $otherUser->id,
             'description' => 'linked NO permission',
-        ])->each(function(Project $project) {
+        ])->each(function (Project $project) {
             $project->users()->attach($this->user);
         });
-        $notLinkedProjects = factory(Project::class, 1)->create([
-            'owner_id' => $otherUser->id,
+        $notLinkedProjects       = factory(Project::class, 1)->create([
+            'owner_id'    => $otherUser->id,
             'description' => 'not linked',
         ]);
 
 
-        $this->json('GET',self::BASE_PATH, [])
+        $this->json('GET', self::BASE_PATH, [])
             ->assertStatus(200)
             ->assertJsonCount($visibleProjects->count())
             ->assertJson($visibleProjects->toArray());
@@ -217,7 +215,7 @@ class ProjectPermissionTest extends TestCase
         Passport::actingAs($this->user);
 
         $projectData = [
-            'name' => 'My super awesome project!',
+            'name'        => 'My super awesome project!',
             'description' => 'It does all you need'
         ];
 
@@ -260,7 +258,7 @@ class ProjectPermissionTest extends TestCase
         ]);
 
         $updateData = [
-            'name' => 'My super awesome project!',
+            'name'        => 'My super awesome project!',
             'description' => 'It does all you need'
         ];
 
@@ -286,7 +284,6 @@ class ProjectPermissionTest extends TestCase
         $this->json('DELETE', self::BASE_PATH . "/{$project->id}")
             ->assertStatus(200)
             ->assertJson($project->toArray());
-
 
 
         $project = factory(Project::class)->create([

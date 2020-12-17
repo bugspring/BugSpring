@@ -2,16 +2,12 @@
 
 namespace Tests\Feature;
 
-use App\Models\IssueState;
-use App\Models\Project;
 use App\Models\User;
 use Bouncer;
 use Firebase\JWT\JWT;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Laravel\Passport\Passport;
-use Laravel\Passport\Token;
-use League\Flysystem\Config;
 use Tests\TestCase;
 
 class UserApiTest extends TestCase
@@ -88,7 +84,7 @@ class UserApiTest extends TestCase
         $this->call('GET', self::BASE_PATH . '/session', [], $cookies)
             ->assertStatus(200)
             ->assertJson([
-                "user"    => [
+                "user"   => [
                     'id'    => $this->user->id,
                     'name'  => $this->user->name,
                     'email' => $this->user->email

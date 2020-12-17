@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Models\IssueState;
+use App\Models\IssueType;
 use App\Models\Project;
 use App\Models\User;
 use Bouncer;
@@ -14,7 +14,7 @@ class ProjectApiTest extends TestCase
 {
     use DatabaseTransactions;
 
-    const BASE_PATH = '/api/project';
+    const BASE_PATH      = '/api/project';
     const JSON_STRUCTURE = [
         'id',
         'owner_id',
@@ -23,7 +23,7 @@ class ProjectApiTest extends TestCase
         'created_at',
         'updated_at',
 
-        'issue_states' => [
+        'issue_types' => [
             '*' => [
                 'id',
                 'title',
@@ -47,24 +47,24 @@ class ProjectApiTest extends TestCase
         Passport::actingAs($this->user);
 
         $projectData = [
-            'name' => "BugSpring",
+            'name'        => "BugSpring",
             'description' => "A modern Issue Tracker...",
-            'issue_states' => [
+            'issue_types' => [
                 [
                     'title' => "open",
-                    'icon' => "mdi-checkbox-multiple-blank-outline"
+                    'icon'  => "mdi-checkbox-multiple-blank-outline"
                 ],
                 [
                     'title' => "in dev",
-                    'icon' => "mdi-progress-wrench"
+                    'icon'  => "mdi-progress-wrench"
                 ],
                 [
                     'title' => "fixed",
-                    'icon' => "mdi-check-box-multiple-outline"
+                    'icon'  => "mdi-check-box-multiple-outline"
                 ],
                 [
                     'title' => "won't fix",
-                    'icon' => "mdi-close-box-multiple"
+                    'icon'  => "mdi-close-box-multiple"
                 ]
             ],
         ];
@@ -75,16 +75,15 @@ class ProjectApiTest extends TestCase
             ->assertJson($projectData);
 
         $this->assertDatabaseHas('projects', [
-            'name' => $projectData['name'],
+            'name'        => $projectData['name'],
             'description' => $projectData['description']
         ]);
-        foreach($projectData['issue_states'] as $issue_state)
-        {
-            $this->assertDatabaseHas('issue_states', $issue_state);
+        foreach ($projectData['issue_types'] as $issue_type) {
+            $this->assertDatabaseHas('issue_types', $issue_type);
         }
     }
 
-    public function testCanAddIssueStatesToProject()
+    public function testCanAddIssueTypesToProject()
     {
         Passport::actingAs($this->user);
 
@@ -92,75 +91,73 @@ class ProjectApiTest extends TestCase
             'owner_id' => $this->user
         ]);
 
-        $issue_states = [
+        $issue_types = [
             [
                 'title' => "open",
-                'icon' => "mdi-checkbox-multiple-blank-outline"
+                'icon'  => "mdi-checkbox-multiple-blank-outline"
             ],
             [
                 'title' => "in dev",
-                'icon' => "mdi-progress-wrench"
+                'icon'  => "mdi-progress-wrench"
             ],
             [
                 'title' => "fixed",
-                'icon' => "mdi-check-box-multiple-outline"
+                'icon'  => "mdi-check-box-multiple-outline"
             ],
             [
                 'title' => "won't fix",
-                'icon' => "mdi-close-box-multiple"
+                'icon'  => "mdi-close-box-multiple"
             ]
         ];
 
-        $this->json('PUT', self::BASE_PATH . "/{$project->id}", ['issue_states' => $issue_states])
+        $this->json('PUT', self::BASE_PATH . "/{$project->id}", ['issue_types' => $issue_types])
             ->assertStatus(200)
-            ->assertJson(['issue_states' => $issue_states]);
+            ->assertJson(['issue_types' => $issue_types]);
 
-        foreach($issue_states as $issue_state)
-        {
-            $this->assertDatabaseHas('issue_states', $issue_state);
+        foreach ($issue_types as $issue_type) {
+            $this->assertDatabaseHas('issue_types', $issue_type);
         }
 
     }
 
-    public function testCanUpdateIssueStatesFromProject()
+    public function testCanUpdateIssueTypesFromProject()
     {
         Passport::actingAs($this->user);
 
-        $project = factory(Project::class)->create([
+        $project     = factory(Project::class)->create([
             'owner_id' => $this->user
         ]);
-        $issue_states = factory(IssueState::class, 4)->create([
+        $issue_types = factory(IssueType::class, 4)->create([
             'project_id' => $project->id
         ]);
 
-        $issue_state_data = [
+        $issue_type_data = [
             [
-                'id' => $issue_states[0]->id,
+                'id'    => $issue_types[0]->id,
                 'title' => "open",
-                'icon' => "mdi-checkbox-multiple-blank-outline"
+                'icon'  => "mdi-checkbox-multiple-blank-outline"
             ],
             [
-                'id' => $issue_states[1]->id,
+                'id'    => $issue_types[1]->id,
                 'title' => "in dev",
-                'icon' => "mdi-progress-wrench"
+                'icon'  => "mdi-progress-wrench"
             ],
             [
-                'id' => $issue_states[2]->id,
+                'id'    => $issue_types[2]->id,
                 'title' => "fixed",
-                'icon' => "mdi-check-box-multiple-outline"
+                'icon'  => "mdi-check-box-multiple-outline"
             ],
             [
-                'id' => $issue_states[3]->id
+                'id' => $issue_types[3]->id
             ]
         ];
 
-        $this->json('PUT', self::BASE_PATH . "/{$project->id}", ['issue_states' => $issue_state_data])
+        $this->json('PUT', self::BASE_PATH . "/{$project->id}", ['issue_types' => $issue_type_data])
             ->assertStatus(200)
-            ->assertJson(['issue_states' => $issue_state_data]);
+            ->assertJson(['issue_types' => $issue_type_data]);
 
-        foreach($issue_state_data as $issue_state)
-        {
-            $this->assertDatabaseHas('issue_states', $issue_state);
+        foreach ($issue_type_data as $issue_type) {
+            $this->assertDatabaseHas('issue_types', $issue_type);
         }
     }
 
@@ -168,25 +165,24 @@ class ProjectApiTest extends TestCase
     {
         Passport::actingAs($this->user);
 
-        $project = factory(Project::class)->create([
+        $project     = factory(Project::class)->create([
             'owner_id' => $this->user
         ]);
-        $issue_states = factory(IssueState::class, 4)->create([
+        $issue_types = factory(IssueType::class, 4)->create([
             'project_id' => $project->id
         ]);
 
-        $issue_state_data = [
-            ['id' => $issue_states[0]->id],
-            ['id' => $issue_states[2]->id],
+        $issue_type_data = [
+            ['id' => $issue_types[0]->id],
+            ['id' => $issue_types[2]->id],
         ];
 
-        $this->json('PUT', self::BASE_PATH . "/{$project->id}", ['issue_states' => $issue_state_data])
+        $this->json('PUT', self::BASE_PATH . "/{$project->id}", ['issue_types' => $issue_type_data])
             ->assertStatus(200)
-            ->assertJson(['issue_states' => $issue_state_data]);
+            ->assertJson(['issue_types' => $issue_type_data]);
 
-        foreach($issue_state_data as $issue_state)
-        {
-            $this->assertDatabaseHas('issue_states', $issue_state);
+        foreach ($issue_type_data as $issue_type) {
+            $this->assertDatabaseHas('issue_types', $issue_type);
         }
     }
 
@@ -196,7 +192,7 @@ class ProjectApiTest extends TestCase
         Passport::actingAs($this->user);
 
         // create Project
-        $project = factory(Project::class)->create();
+        $project     = factory(Project::class)->create();
         $projectData = $project->toArray();
         $this->assertFalse($projectData['is_favorite']);
 
@@ -207,7 +203,7 @@ class ProjectApiTest extends TestCase
             ->assertStatus(200);
 
         $this->json('GET', self::BASE_PATH . "/{$project->id}")
-            ->assertJson(['is_favorite'=>true]);
+            ->assertJson(['is_favorite' => true]);
 
         // make project favorite again (to see that the api wont die in the process)
         $projectData['is_favorite'] = true;
@@ -216,7 +212,7 @@ class ProjectApiTest extends TestCase
             ->assertStatus(200);
 
         $this->json('GET', self::BASE_PATH . "/{$project->id}")
-            ->assertJson(['is_favorite'=>true]);
+            ->assertJson(['is_favorite' => true]);
 
         // make project no favorite
         $projectData['is_favorite'] = false;
@@ -225,7 +221,7 @@ class ProjectApiTest extends TestCase
             ->assertStatus(200);
 
         $this->json('GET', self::BASE_PATH . "/{$project->id}")
-            ->assertJson(['is_favorite'=>false]);
+            ->assertJson(['is_favorite' => false]);
 
         // make project no favorite again
         $projectData['is_favorite'] = false;
@@ -234,7 +230,7 @@ class ProjectApiTest extends TestCase
             ->assertStatus(200);
 
         $this->json('GET', self::BASE_PATH . "/{$project->id}")
-            ->assertJson(['is_favorite'=>false]);
+            ->assertJson(['is_favorite' => false]);
     }
 
     public function testIndexReturnsAllOwnedAndLinkedProjects()
@@ -244,22 +240,22 @@ class ProjectApiTest extends TestCase
 
         factory(Project::class, 50)->create([
             'owner_id' => $this->user->id,
-        ])->each(function (Project $project)  {
-            $project->issue_states()->saveMany(factory(IssueState::class, 5)->make());
+        ])->each(function (Project $project) {
+            $project->issue_types()->saveMany(factory(IssueType::class, 5)->make());
         });
 
         factory(Project::class, 50)->create([
             'owner_id' => $otherUser->id
-        ])->each(function(Project $project){
-            $project->issue_states()->saveMany(factory(IssueState::class, 5)->make());
+        ])->each(function (Project $project) {
+            $project->issue_types()->saveMany(factory(IssueType::class, 5)->make());
             $project->users()->save($this->user);
         });
 
-        $this->json('GET',self::BASE_PATH, [])
+        $this->json('GET', self::BASE_PATH, [])
             ->assertStatus(200)
             ->assertJsonStructure([
-            '*' => self::JSON_STRUCTURE
-        ])->assertJsonCount(100);
+                '*' => self::JSON_STRUCTURE
+            ])->assertJsonCount(100);
     }
 
     public function testStoreCreatesAProjectInTheDatabase()
@@ -267,7 +263,7 @@ class ProjectApiTest extends TestCase
         Passport::actingAs($this->user);
 
         $projectData = [
-            'name' => "BugSpring",
+            'name'        => "BugSpring",
             'description' => "A modern Issue Tracker...",
         ];
 
@@ -324,8 +320,8 @@ class ProjectApiTest extends TestCase
         $otherUser = factory(User::class)->create();
 
         $updateData = [
-            'owner_id' => $otherUser->id,
-            'name' => 'My super awesome project!',
+            'owner_id'    => $otherUser->id,
+            'name'        => 'My super awesome project!',
             'description' => 'Is now owned by someone else...'
         ];
 
@@ -374,7 +370,7 @@ class ProjectApiTest extends TestCase
             ]);
 
         $this->assertDatabaseHas('projects', [
-            'id' => $project->id,
+            'id'      => $project->id,
             $property => $value
         ]);
     }
@@ -406,7 +402,7 @@ class ProjectApiTest extends TestCase
             ->assertJsonStructure(self::JSON_STRUCTURE)
             ->assertJson($project->toArray());
 
-        $this->assertDatabaseMissing('projects',['id' => $project->id]);
+        $this->assertDatabaseMissing('projects', ['id' => $project->id]);
     }
 
 

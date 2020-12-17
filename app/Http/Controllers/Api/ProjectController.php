@@ -8,10 +8,9 @@ use App\Http\Requests\Api\Project\IndexProjectsRequest;
 use App\Http\Requests\Api\Project\ShowProjectRequest;
 use App\Http\Requests\Api\Project\StoreProjectRequest;
 use App\Http\Requests\Api\Project\UpdateProjectRequest;
-use App\Models\IssueState;
 use App\Models\Project;
 use App\Models\User;
-use App\Repositories\IssueStateRepository;
+use App\Repositories\IssueTypeRepository;
 use App\Repositories\ProjectRepository;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -26,15 +25,15 @@ class ProjectController extends Controller
      */
     private $projectRepository;
     /**
-     * @var IssueStateRepository
+     * @var IssueTypeRepository
      */
-    private $issueStateRepository;
+    private $issueTypeRepository;
 
     public function __construct(ProjectRepository $projectRepository,
-                                IssueStateRepository $issueStateRepository)
+                                IssueTypeRepository $issueTypeRepository)
     {
-        $this->projectRepository = $projectRepository;
-        $this->issueStateRepository = $issueStateRepository;
+        $this->projectRepository   = $projectRepository;
+        $this->issueTypeRepository = $issueTypeRepository;
     }
 
     /**
@@ -78,11 +77,11 @@ class ProjectController extends Controller
             'description' => $request->description
         ]);
 
-        if($request->has('issue_states'))
+        if($request->has('issue_types'))
         {
-            foreach ($request->issue_states as $issue_state)
+            foreach ($request->issue_types as $issue_type)
             {
-                $this->projectRepository->createIssueStateForProject($project, $issue_state);
+                $this->projectRepository->createIssueTypeForProject($project, $issue_type);
             }
         }
 
@@ -124,12 +123,11 @@ class ProjectController extends Controller
         if($request->has('is_favorite')) {
             $updateData['is_favorite'] = $request->is_favorite;
         }
-
-        if($request->has('issue_states')) {
-            $this->issueStateRepository->syncWithProject($project->id, $request->issue_states);
+        if($request->has('issue_types')) {
+            $this->issueTypeRepository->syncWithProject($project->id, $request->issue_types);
         }
 
-        return $this->projectRepository->updateProject($project, $updateData, ['issue_states']);
+        return $this->projectRepository->updateProject($project, $updateData);
     }
 
     /**

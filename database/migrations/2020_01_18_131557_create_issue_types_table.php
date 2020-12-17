@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateIssueStatesTable extends Migration
+class CreateIssueTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -36,6 +36,6 @@ class CreateIssueStatesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('issue_states');
+        Schema::dropIfExists('issue_types');
     }
 }

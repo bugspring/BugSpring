@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\IssueState;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Database\Seeder;

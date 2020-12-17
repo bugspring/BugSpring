@@ -59,7 +59,8 @@ class IssueController extends Controller
         $issue = $this->issueRepository->createIssue([
             'name' => $request->name,
             'project_id' => $project->id,
-            'issue_state_id' => $request->issue_state_id
+            'issue_type_id' => $request->issue_type_id,
+            'creator' => $request->user()->id
         ]);
         return response()->json($this->issueRepository->getIssueById($issue->id), 201);
     }
@@ -98,8 +99,8 @@ class IssueController extends Controller
         if ($request->has('name')) {
             $data['name'] = $request->name;
         }
-        if ($request->has('issue_state_id')) {
-            $data['issue_state_id'] = $request->issue_state_id;
+        if ($request->has('issue_type_id')) {
+            $data['issue_type_id'] = $request->issue_type_id;
         }
 
         return $this->issueRepository->updateIssue($issue, $data);

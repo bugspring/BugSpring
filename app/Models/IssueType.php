@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class IssueState
+ * Class IssueType
  * @package App\Models
  *
  * @property int id
@@ -14,10 +14,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property int project_id
  *
  * @property Project project
+ * @property Issue[] issues
  */
-class IssueState extends Model
+class IssueType extends Model
 {
-
     protected $fillable = [
         'id',
         'title',
@@ -25,19 +25,12 @@ class IssueState extends Model
         'project_id'
     ];
 
+
     public function project() {
         return $this->belongsTo(Project::class);
     }
 
     public function issues() {
         return $this->hasMany(Issue::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function blobs()
-    {
-        return $this->belongsToMany();
     }
 }

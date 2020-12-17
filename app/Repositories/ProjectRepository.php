@@ -74,9 +74,9 @@ class ProjectRepository
      * @param $data
      * @return Project
      */
-    public function createIssueStateForProject(Project $project, $data)
+    public function createIssueTypeForProject(Project $project, $data)
     {
-        return $project->issue_states()->create($data);
+        return $project->issue_types()->create($data);
     }
 
     /**
