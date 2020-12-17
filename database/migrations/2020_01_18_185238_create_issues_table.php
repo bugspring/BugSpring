@@ -18,6 +18,7 @@ class CreateIssuesTable extends Migration
             $table->string('name');
             $table->unsignedBigInteger('project_id');
             $table->unsignedBigInteger('issue_type_id');
+            $table->unsignedBigInteger('creator');
             $table->unsignedBigInteger('assignee')->nullable();
             $table->timestamps();
 
@@ -30,6 +31,12 @@ class CreateIssuesTable extends Migration
             $table->foreign('issue_type_id')
                 ->references('id')
                 ->on('issue_types')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->foreign('creator')
+                ->references('id')
+                ->on('users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
