@@ -1,3 +1,6 @@
+import {updateArray} from "../../util/updateArray";
+import projectApi from "../../api/projectApi";
+
 export default {
     namespaced: true,
     state: {
@@ -13,20 +16,17 @@ export default {
             state.issues = issues;
         },
         setIssue(state, issue) {
-            if (state.issues === null)
-                return;
-            let projectFound = false;
-            state.issues = state.issues.map(i => {
-                if (issue.id === i.id) {
-                    projectFound = true;
-                    return issue;
-                }
-                return i;
-            });
-            if (!projectFound) {
-                state.issues.push(issue);
-            }
+            state.issues = updateArray(state.issues, issue);
         },
     },
-    actions: {}
+    actions: {
+        reloadIssues({commit}) {
+            commit('setIsLoading', true);
+            return issuesApi.index().then(projects => {
+                commit('setProjects', projects);
+            }).finally(() => {
+                commit('setIsLoading', false);
+            });
+        },
+    }
 }

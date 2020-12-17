@@ -13,11 +13,12 @@ class CreateIssueStatesTable extends Migration
      */
     public function up()
     {
-        Schema::create('issue_states', function (Blueprint $table) {
+        Schema::create('issue_types', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('title');
             $table->string('icon');
-            $table->unsignedBigInteger('project_id');
+            $table->unsignedBigInteger('project_id')->nullable()
+                ->comment("System wide issue type when null");
             $table->timestamps();
 
             $table->foreign('project_id')
