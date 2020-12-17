@@ -6,19 +6,7 @@
         <v-card class="pr-2" width="650" height="350">
             <v-row class="fill-height">
                 <v-col lg="3" class="pr-0 pt-0">
-                    <slot name="menu">
-                        <v-list>
-                            <v-list-item @click="$emit('own-click')">
-                                {{ ownTitle }}
-                            </v-list-item>
-                            <v-list-item @click="$emit('starred-click')">
-                                {{ starredTitle }}
-                            </v-list-item>
-                            <v-list-item @click="$emit('browse-click')">
-                                {{ browseTitle }}
-                            </v-list-item>
-                        </v-list>
-                    </slot>
+                    <slot name="menu" />
                 </v-col>
                 <v-divider vertical class="ma-0"></v-divider>
                 <v-col>
@@ -45,9 +33,6 @@
         name: "EnityMenu",
         props: {
             label: String,
-            ownTitle: String,
-            starredTitle: String,
-            browseTitle: String,
             noFrequentlyTitle: String,
         }
     }

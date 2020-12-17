@@ -38,8 +38,8 @@ class Project extends Model
         'description',
         'is_favorite'
     ];
-    protected $with = ['issue_states'];
-    protected $hidden = ['pivot'];
+    protected $with     = ['issue_states'];
+    protected $hidden   = ['pivot'];
 
     protected $appends = ['is_favorite'];
 
@@ -53,7 +53,8 @@ class Project extends Model
         return $this->belongsToMany(User::class);
     }
 
-    public function issue_states() {
+    public function issue_states()
+    {
         return $this->hasMany(IssueState::class);
     }
 
@@ -64,8 +65,7 @@ class Project extends Model
 
     public function getIsFavoriteAttribute()
     {
-        if(Auth::check())
-        {
+        if (Auth::check()) {
             /** @var ProjectRepository $projectRepo */
             $projectRepo = app(ProjectRepository::class);
 
@@ -76,12 +76,14 @@ class Project extends Model
 
     public function setIsFavoriteAttribute($isFavorite)
     {
-        if(Auth::check())
-        {
+        if ($isFavorite == $this->is_favorite) {
+            return;
+        }
+        if (Auth::check()) {
             /** @var ProjectRepository $projectRepo */
             $projectRepo = app(ProjectRepository::class);
 
-            if($isFavorite) {
+            if ($isFavorite) {
                 $projectRepo->addToFavorites($this->id, Auth::user()->id);
             } else {
                 $projectRepo->removeFromFavorites($this->id, Auth::user()->id);

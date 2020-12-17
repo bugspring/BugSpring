@@ -5,7 +5,7 @@ import Dashboard from "./views/Dashboard";
 
 import ProjectList from "./views/projects/ProjectList";
 import ProjectView from "./views/projects/ProjectView";
-
+import IssueList from "./views/issues/IssueList";
 Vue.use(Router)
 
 export default new Router({
@@ -24,6 +24,11 @@ export default new Router({
             path: '/projects/:id',
             name: ProjectView.name,
             component: ProjectView
+        },
+        {
+            path: '/list/issues/:filter',
+            name: IssueList.name,
+            component: ProjectList
         },
         {
             path: '/about',

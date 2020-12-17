@@ -180,7 +180,6 @@ class ProjectApiTest extends TestCase
             ['id' => $issue_states[2]->id],
         ];
 
-//        dd($this->json('PUT', self::BASE_PATH . "/{$project->id}", ['issue_states' => $issue_states])->baseResponse->content());
         $this->json('PUT', self::BASE_PATH . "/{$project->id}", ['issue_states' => $issue_state_data])
             ->assertStatus(200)
             ->assertJson(['issue_states' => $issue_state_data]);
@@ -210,7 +209,25 @@ class ProjectApiTest extends TestCase
         $this->json('GET', self::BASE_PATH . "/{$project->id}")
             ->assertJson(['is_favorite'=>true]);
 
+        // make project favorite again (to see that the api wont die in the process)
+        $projectData['is_favorite'] = true;
+
+        $this->json('PUT', self::BASE_PATH . "/{$project->id}", $projectData)
+            ->assertStatus(200);
+
+        $this->json('GET', self::BASE_PATH . "/{$project->id}")
+            ->assertJson(['is_favorite'=>true]);
+
         // make project no favorite
+        $projectData['is_favorite'] = false;
+
+        $this->json('PUT', self::BASE_PATH . "/{$project->id}", $projectData)
+            ->assertStatus(200);
+
+        $this->json('GET', self::BASE_PATH . "/{$project->id}")
+            ->assertJson(['is_favorite'=>false]);
+
+        // make project no favorite again
         $projectData['is_favorite'] = false;
 
         $this->json('PUT', self::BASE_PATH . "/{$project->id}", $projectData)

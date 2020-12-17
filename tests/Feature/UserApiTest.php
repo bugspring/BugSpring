@@ -80,20 +80,20 @@ class UserApiTest extends TestCase
         $encrypter = app(Encrypter::class);
 
         $cookies = [Passport::cookie() => encrypt('33685b41dbc47dbe410bb1fc96e1e58a114c529c|' . JWT::encode([
-            "sub"    => 1,
-            "csrf"   => "nTk6cA8fgvw0lklXwkSxS3ELcSbY2imfczVNRa2R",
-            "expiry" => 1607202264
-        ], $encrypter->getKey()))];
-        $this->call('GET', self::BASE_PATH . '/session', [], $cookies)
-            ->dump();
+                "sub"    => 1,
+                "csrf"   => "nTk6cA8fgvw0lklXwkSxS3ELcSbY2imfczVNRa2R",
+                "expiry" => 1607202264
+            ], $encrypter->getKey()))];
 
-        exit;
-        $this->json('get', self::BASE_PATH . "/session")
+        $this->call('GET', self::BASE_PATH . '/session', [], $cookies)
             ->assertStatus(200)
             ->assertJson([
-                'id'    => $this->user->id,
-                'name'  => $this->user->name,
-                'email' => $this->user->email
+                "user"    => [
+                    'id'    => $this->user->id,
+                    'name'  => $this->user->name,
+                    'email' => $this->user->email
+                ],
+                "expiry" => "1607202264"
             ]);
 
     }

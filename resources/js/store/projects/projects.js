@@ -1,6 +1,7 @@
 import projectApi from "../../api/projectApi";
 import projectCrud from "./projectCrud"
 import projectEditor from "./projectEditor";
+import {updateArray} from "../../util/updateArray";
 
 export default {
     namespaced: true,
@@ -22,20 +23,7 @@ export default {
             state.projects = projects;
         },
         setProject(state, project) {
-            if (state.projects === null)
-                return;
-            let projectFound = false;
-            state.projects = state.projects.map(p => {
-                if(project.id === p.id)
-                {
-                    projectFound = true;
-                    return project;
-                }
-                return p;
-            });
-            if(!projectFound) {
-                state.projects.push(project);
-            }
+            state.projects = updateArray(state.projects, project);
         },
         removeProject(state, project) {
             state.projects = state.projects.filter(p => {

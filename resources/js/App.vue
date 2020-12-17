@@ -34,10 +34,20 @@
 
                         <v-divider vertical class="ma-0"></v-divider>
                         <EntityMenu :label="$tc('issue.label', 2)"
-                                    :own-title="$t('issue.own')"
-                                    :starred-title="$t('issue.starred')"
-                                    :browse-title="$t('issue.browse')"
                                     :no-frequently-title="$t('issue.no-frequently')">
+                            <template v-slot:menu>
+                                <v-list>
+                                    <v-list-item @click="listIssues('own')">
+                                        {{ $t('issue.own') }}
+                                    </v-list-item>
+                                    <v-list-item @click="listIssues('starred')">
+                                        {{ $t('issue.assigned') }}
+                                    </v-list-item>
+                                    <v-list-item @click="listIssues('browse')">
+                                        {{ $t('issue.starred') }}
+                                    </v-list-item>
+                                </v-list>
+                            </template>
                         </EntityMenu>
 
                         <v-divider vertical class="ma-0"></v-divider>
@@ -83,12 +93,13 @@
 import EntityMenu from "./components/app/EnityMenu";
 import AddEntityMenu from "./components/app/AddEntityMenu";
 import AccountMenu from "./components/app/AccountMenu";
-import Projects from "./views/projects/ProjectList";
+import ProjectList from "./views/projects/ProjectList";
 import {mapActions, mapState} from "vuex";
 import ProjectEditor from "./components/projects/ProjectEditor";
 import NotificationSnakbar from "./components/NotificationSnakbar";
 import projectEditor from "./util/dialogs/projectEditor";
 import SessionCountdown from "./components/SessionCountdown";
+import IssueList from "./views/issues/IssueList";
 
 export default {
     name: "App.vue",
@@ -110,7 +121,10 @@ export default {
             projectEditor.createProject();
         },
         listProjects(filter) {
-            this.$router.push({name: Projects.name, params: {filter}}).catch(err => {});
+            this.$router.push({name: ProjectList.name, params: {filter}}).catch(err => {});
+        },
+        listIssues(filter) {
+            this.$router.push({name: IssueList.name, params: {filter}}).catch(err => {});
         }
     }
 }

@@ -15,7 +15,7 @@
     },
     "project": {
         "label": "Project | Projects",
-        "own": "Your Projects",
+        "own": "My Projects",
         "starred": "Starred Projects",
         "browse": "Explore Projects",
         "no-frequently": "Projects you visit often will appear here",
@@ -26,9 +26,9 @@
     },
     "issue": {
         "label": "Issue | Issues",
-        "own": "Your Issues",
+        "own": "My Issues",
+        "assigned": "Assigned to me",
         "starred": "Starred Issues",
-        "browse": "Explore Issues",
         "no-frequently": "Issues you visit often will appear here",
         "add": "New Issue"
     }
