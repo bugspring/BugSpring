@@ -19,10 +19,6 @@ class ProjectSeeder extends Seeder
 
         factory(Project::class, 5)->create([
             'owner_id' => $user->id,
-        ])->each(function($project) {
-            factory(IssueState::class,5)->create([
-                'project_id' => $project->id
-            ]);
-        });
+        ]);
     }
 }
