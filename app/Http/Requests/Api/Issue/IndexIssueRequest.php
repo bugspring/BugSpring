@@ -24,7 +24,7 @@ class IndexIssueRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'project' => 'optional|numeric|exists:projects,id'
         ];
     }
 }

@@ -15,7 +15,7 @@ class IssueApiTest extends TestCase
 {
     use DatabaseTransactions;
 
-    const BASE_PATH      = '/api/project/%d/issue';
+    const BASE_PATH      = '/api/issue';
     const JSON_STRUCTURE = [
         'id',
         'name',
@@ -46,6 +46,62 @@ class IssueApiTest extends TestCase
         $this->basePath = sprintf(self::BASE_PATH, $this->project->id);
     }
 
+    public function testIndexListsAllIssuesOfAUser()
+    {
+        Passport::actingAs($this->user);
+
+        $otherUser = factory(User::class)->create();
+        $otherProject = factory(Project::class)->create([
+            'owner_id' => $otherUser->id
+        ]);
+
+        $issues = factory(Issue::class, 50)->create([
+            'project_id' => $otherProject->id,
+            'creator' => $otherUser->id,
+        ]);
+
+        //don't list any when there are none (visible to user)
+        $this->json('GET', $this->basePath)
+            ->assertStatus(200)
+            ->assertJsonStructure(['*' => self::JSON_STRUCTURE])
+            ->assertJsonCount(0);
+
+        // list issues when they are assigned to the user
+        Issue::whereCreator($otherUser->id)->update(['assignee' => $this->user->id]);
+
+        $this->json('GET', $this->basePath)
+            ->assertStatus(200)
+            ->assertJsonStructure(['*' => self::JSON_STRUCTURE])
+            ->assertJsonCount($issues->count());
+
+        // list issues when they are created by the user
+        Issue::whereCreator($otherUser->id)->update(['assignee' => null, 'creator' => $this->user->id]);
+
+        $this->json('GET', $this->basePath)
+            ->assertStatus(200)
+            ->assertJsonStructure(['*' => self::JSON_STRUCTURE])
+            ->assertJsonCount($issues->count());
+
+        // list issues when they are in a project where the user is member of
+        Issue::whereCreator($this->user->id)->update(['assignee' => null, 'creator' => $otherUser->id]);
+        $otherProject->users()->sync([$this->user->id]);
+
+        $this->json('GET', $this->basePath)
+            ->assertStatus(200)
+            ->assertJsonStructure(['*' => self::JSON_STRUCTURE])
+            ->assertJsonCount($issues->count());
+
+        // list issues when they are in a project where the user is member of
+        Issue::whereCreator($this->user->id)->update(['assignee' => null, 'creator' => $otherUser->id]);
+        $otherProject->users()->sync([]);
+        $otherProject->update(['owner_id' => $this->user->id]);
+
+        $this->json('GET', $this->basePath)
+            ->assertStatus(200)
+            ->assertJsonStructure(['*' => self::JSON_STRUCTURE])
+            ->assertJsonCount($issues->count());
+
+    }
 
     public function testIndexListsAllIssuesOfAProject()
     {

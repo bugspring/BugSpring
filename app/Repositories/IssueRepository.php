@@ -17,14 +17,7 @@ class IssueRepository
 
     public function getIssuesByUser(int $userId): Collection
     {
-        // assigned to
-        // created by
-        // in project with access
-
-    }
-
-    public function getIssuesAssignedToUser(int $userId): Collection
-    {
+        return Issue::visibleForUser($userId);
 
     }
 

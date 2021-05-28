@@ -26,8 +26,8 @@ Route::group(['namespace' => 'Api'], function()
 
         Route::apiResource('/user','UserController');
 
-        Route::apiResource('/project/{project}/issue', 'IssueController');
         Route::apiResource('/project', 'ProjectController');
+        Route::apiResource('/issue', 'IssueController');
 
     });
 

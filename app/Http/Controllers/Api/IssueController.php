@@ -38,8 +38,9 @@ class IssueController extends Controller
      * @param Issue $issue
      * @return \Illuminate\Support\Collection
      */
-    public function index(IndexIssueRequest $request, Project $project)
+    public function index(IndexIssueRequest $request)
     {
+
         $user = $request->user();
         return $this->issueRepository->getIssuesByProjectId($project->id)
             ->filter(function (Issue $issue) use ($user) {
